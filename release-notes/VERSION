@@ -1,0 +1,158 @@
+Version: 2.0.2
+
+Release date:
+  06-Sep-2012
+
+Description:
+  Another patch release for 2.0.0
+
+Problems fixed:
+
+* [STAXMATE-41] NPE with DOM elements/attributes when document built in non-NS mode
+  (reported by Prokopis P)
+
+Other:
+
+* Now specifies dependency as Woodstox 4.1; although may still work on 4.0.x
+ (just not tested or officially supported)
+
+------------------------------------------------------------------------
+== History: ==
+------------------------------------------------------------------------
+
+2.0.1: [20-Nov-2010]
+
+NOTE: requires new version of stax2-api, 3.0.4 (at least for STAXMATE-37)
+
+Problems fixed:
+
+* [STAXMATE-37] getElemStringValue causes unexpected end_document when using
+  default Sun Java6 XMLInputFactory (note: caused by Stax2 RI bug, outside of StaxMate)
+ (reported by Rohan H)
+* [STAXMATE-39] Problems with DomConverter, building DOM trees from Stax reader.
+ (reported by Guillaume L)
+
+2.0.0: [12-Mar-2009]
+
+Compatibility changes:
+
+* Requires Stax2-api 3.x (includes Typed Access API); new functionality
+  used extensively by StaxMate.
+
+Problems fixed:
+
+New/improved functionality:
+
+* [STAXMATE-7]: Added "SMInputCursor.asEvent()" to allow for
+  accessing stream information in a more convenient form and retaining
+  it if need be.
+* [STAXMATE-8]: Added "DOMConverter", which allows building DOM trees
+  from Stax stream reader, writing DOM trees into Stax stream writers
+* [STAXMATE-10]: Typed accessor for Java Enum values (above and beyond
+  basic Stax2 Typed Access API types)
+* [STAXMATE-22]: Added "SMInputCursor.advance()" to support more
+  convenient creation of positioned root cursors.
+* [STAXMATE-25]: Allow pre-declaring namespaces with
+  "SMOutputElement.predeclareNamespace"
+  (requested by Gregg H)
+* [STAXMATE-28]: StaxMate jar is now a valid OSGi bundle, with complete
+  import/export statements.
+* Most basic Typed Access API types support for both cursors and
+  output elements.
+
+1.3.1: [06-Dec-2008]
+
+Problems fixed:
+
+* [STAXMATE-26]: NPE when passing null namespace to SMOutputContainer.createBufferedElement()
+* [STAXMATE-27]: Attributes were not retained for buffered elements.
+
+1.3.0: [03-Sep-2008]
+
+Problems fixed:
+
+* [STAXMATE-20]: Binding of non-default namespaces was buggy; scoping
+    was not properly handled, leading to missing declarations
+* Vastly improved Javadocs.
+* Added more Typed Access methods to input cursors (only had int
+    accessors for attributes)
+
+New/improved functionality:
+
+* [STAXMATE-12]: Upgrade sample web app to use later jars (woodstox,
+  jetty, staxmate)
+* [STAXMATE-13]: StaxMate factories can now be constructed as "stateful",
+  meaning they can contain reference to underlying Stax stream factory
+  to use. This can simplify code for constructing StaxMate objects.
+* [STAXMATE-15]: Added Typed Access methods to writer side (write
+  boolean/int/long attributes, character content).
+* [STAXMATE-19]: Add convenience method for accessing current stream
+  location (SMInputCursor.getStreamLocation()). Also added matching
+  'SMInputCursor.getCursorLocation()', and deprecated older ambiguously
+  name 'SMInputCursor.getLocation()'.
+* Added 'SMInputCursor.getPathDesc()' which will produce XPath-like
+  description of where the cursor points to, if element tracking has
+  been enabled (so that information is available)
+
+1.2.0: [01-Aug-2008]
+
+Problems fixed:
+  * [STAXMATE-6]: Verify that StaxMate works well on Sun Sjsxp (default
+    Stax impl of JDK 6). One fix to Stax2 ref. impl (from Woodstox);
+    one workaround to Sjsxp bug (#63).
+  * [STAXMATE-11]: Verify that StaxMate works well on Aalto XML processor
+
+1.1.0: [13-Nov-2007]
+
+New functionality:
+  * [STAXMATE-3]: Added SMInputCursor.hasName() methods.
+
+Improvements:
+
+  * [STAXMATE-4]: Rewrite cursor synchronization (sub-tree skipping) using
+    depth information given by underlying Stax2 stream reader, instead of
+    each cursor keeping local nesting counts.
+
+1.0.0: [02-May-2007]
+
+  Problems fixed:
+
+  * [STAXMATE-1]: Cursor synchronization did not work as expected 
+    when reading text nodes.
+  * Handling of sub-tree skipping when START_ELEMENT were filtered out
+    was not working correctly (either with hierarchic or flat cursors)
+
+  New functionality:
+
+  * Added ElementFilter, for only accessing elements with specified
+    name
+
+0.9.1: [12-Sep-2006]
+
+  Problems fixed:
+
+  * Nested cursor synchronization problems fixed, unit tests added
+    [contributed by Ed G, David B]
+
+0.9: [11-Aug-2006]
+
+  New functionality:
+
+  * Full writer-side functionality included
+
+  Rewrite:
+
+  * Converted StaxMate to JDK 1.5: now uses Enums as return values, which
+    is nice as Enums can have properties.
+  * Renamed 'iterators' to 'cursors' (input side change); renamed packages
+    to have more meaningful names.
+
+....
+
+0.6: [late 2004]
+
+  Added writer-side functionality
+
+0.5: [mid-2004]:
+
+  First version, proof-of-concept, only reader side functionality.

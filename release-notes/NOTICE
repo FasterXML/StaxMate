@@ -1,0 +1,10 @@
+This product currently only contains code developed by authors
+of specific components, as identified by the source code files.
+
+Product requires a Stax XML processor implementation for operation,
+but does not bundle any specific implementation. When using
+a Stax implementation, licensing for that product has to be followed
+but has no direct effect on licensing of this product.
+
+For additional credits (generally to people who reported problems)
+see CREDITS file.

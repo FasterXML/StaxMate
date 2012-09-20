@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<project basedir="." default="build">
+  <property name="build.dir" value="${basedir}/build" />
+  <property name="build.classes.dir" value="${build.dir}/classes" />
+  <property name="src.dir" value="${basedir}/src"/>
+  <property name="deploy.dir" value="${basedir}/deploy"/>
+
+  <target name="init">
+    <mkdir dir="${build.dir}" />
+    <mkdir dir="${build.classes.dir}" />
+  </target>
+
+  <target name="clean">
+    <delete dir="${build.dir}" />
+    <delete dir="${deploy.dir}/webapps" />
+  </target>
+
+  <target name="compile" depends="init">
+    <javac srcdir="${src.dir}" destdir="${build.classes.dir}">
+      <classpath>
+        <fileset dir="${basedir}/lib" includes="*.jar"/>
+        <fileset dir="${basedir}/jetty/lib" includes="servlet*.jar"/>
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="deploy" depends="build">
+    <mkdir dir="${deploy.dir}/webapps" />
+    <mkdir dir="${deploy.dir}/logs" />
+    <copy file="${build.dir}/uuid-server.war" todir="${deploy.dir}/webapps" />
+  </target>
+
+  <target name="run-webapp" depends="deploy">
+  </target>
+
+  <target name="build" depends="init,build-server,build-client" />
+
+  <target name="build-client" depends="compile">
+    <jar jarfile="${build.dir}/uuid-client.jar">
+      <manifest>
+        <attribute name="Built-By" value="${user.name}"/>
+        <attribute name="Implementation-Title"   value="Sample UUID Server"/>
+        <attribute name="Implementation-Version" value="1.0"/>
+        <attribute name="Implementation-Vendor"  value="www.cowtowncoder.com"/>
+        <attribute name="Main-Class" value="sample.UuidClient"/>
+      </manifest>
+      <fileset dir="${build.classes.dir}" includes="**/*Client*.class" />
+    </jar>
+  </target>
+
+  <target name="build-server" depends="compile"
+     description="Sample web service built using StaxMate and Java Uuid Generator">
+	  <war destfile="${build.dir}/uuid-server.war"
+        webxml="${basedir}/cfg/web.xml"
+      >
+        <lib dir="${basedir}/lib">
+			<include name="*.jar"/>
+        </lib>
+        <classes dir="${build.classes.dir}">
+			<include name="sample/*Serv*.class"/>
+        </classes>
+        <fileset dir="${basedir}/html" />
+	    <exclude name="**/*"/>
+	  </war>
+  </target>
+
+</project>

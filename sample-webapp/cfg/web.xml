@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<web-app>
+    <servlet>
+	  <servlet-name>UuidServlet</servlet-name>
+	  <servlet-class>sample.UuidServlet</servlet-class>
+      <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+      <servlet-name>UuidServlet</servlet-name>
+      <url-pattern>/generate-uuid</url-pattern>
+    </servlet-mapping>
+    <welcome-file-list>
+      <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+</web-app>

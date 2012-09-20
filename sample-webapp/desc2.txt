@@ -1,0 +1,39 @@
+(continuing the story of StaxMate based simple web service)
+
+1. Platform
+
+Although the web service can be deployed on any servlet container, the bundled download archive comes with embedded Jetty 6 container. I highly recommend Jetty for tasks like this -- it is mean clean servlet container. In fact, for this particular use case, I could have made even more light-weight version that need not use Servlet API, just Jetty's "raw" interface. But just in case someone wants to try it out on Tomcat or something, I decided to do it the standard way.
+
+2. Garbage In
+
+As I said earlier, the web service takes request in two forms: simple GET requests, in which all argument come in as part of request URL (as query parameters); and xml-based POST requests, in which client will send request xml document that contains same information. To demonstrate potential benefits of the latter approach (as well as to get to use StaxMate), POST requests allow slightly more complicated requests to be made: namely, one can request multiple batches of UUIDs to be generated using just a single request. While it would be possible to this with query parameters, it would require hacks with query parameter naming, and soon become unmaintainable if new orthogonal features were to be added.
+
+Instead of documenting in detail everything one needs to know about GET URLs, here is an example of URL you could use to contact a locally running server (just pound it in your favourite browser and see the results), assuming default server port from the downloadable package was used:
+
+http://localhost:7272/uuid-server/generate-uuid?method=RANDOM&count=3
+
+This would generate 3 UUIDs, using the Random number based generation method (version 4).
+
+Likewise, a sample POST request could look like:
+
+<request>
+ <generate-uuid method="random" />
+ <generate-uuid method="location" count="3" />
+ <generate-uuid method="name">http://www.cowtowncoder.com/foo</generate-uuid>
+</request>
+
+and would create 5 UUIDs all in all, using all 3 different generation methods (last of which requires an argument). This one is trickier to invoke using browser, and would generally be invoked using a special client, be that written in Java, Perl, C# or Javascript.
+
+3. Garbage Out
+
+Although there are 2 different ways to send a request, the output will always be in same format, a simple xml document, of type 'text/xml'. So, for example, the first request would return result document like:
+
+<response>
+ <uuid>733365c3-2d44-4f93-accd-43cb39b0cedf</uuid>
+ <uuid>249df610-c658-491f-bf58-d21bcee110cb</uuid>
+ <uuid>a93a3ecf-2636-4f1c-8d14-d63bc84f2d67</uuid>
+</response>
+
+About the only additional thing to note is that the servlet will cap maximum number of UUIDs generated per request to 100: if total requested (including all batches, for POST request) is more, only 100 will be returned, and the resulting xml document will contain a comment indicating this restriction, after all the uuid entries.
+
+

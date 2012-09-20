@@ -1,0 +1,103 @@
+(continuing the story of StaxMate based simple web service, appendix A)
+
+So much for implementation details. Service works (after cursory testing), life is grand. So what next? If we are lucky, and have a worthwhile service (here I urge you to Use Your Imagination -- I must admit that the UUID service might not really be such a service), we get flooded with request. And at that point, we hopefully have, or can get, enough capacity. But how much is enough? Let's do some load testing to find out.
+
+1. Oh the possibilities!
+
+With the idea that perhaps we should check out performance of our new service, the main question is what and how to test. Since we have written both the server and client, we pretty much have the main pieces handy. Just run the server, and bunch of client sessions. Right?
+
+Yes, that is the basic idea. But there are many variations regarding particular setup to use, configurations of the server and clients and so on. To point out some (many of which we will review later on):
+
+* What kind of requests to do (in our case, GET vs. POST; Uuid generation method; number of Uuids to request; all of these can have different performance)
+* How to configure server (for Jetty, whether to use traditional blocking, or NIO [New IO, JDK 1.4+] handlers; whether to allow HTTP 1.1 pipelining or not)
+* Where and how to run clients (everything locally; one or more separate client machines; how many threads to run)
+
+Fortunately, most of these options are available due to the way client is designed (which is of course not a co-incidence; client was written mostly for load testing purposes).
+
+Ideally, we should probably try to run a server on a separate machine, and have more than one dedicated client machine sending requests. This would simular a somewhat realistic setup. However, let's start with the simplest case, where server and client(s) are running on the same host. This will limit request rate (intuitively perhaps by half or more), but will be simplest to set up. It will also be quite easy to vary other factors.
+
+2. First take
+
+So, let us start with a simple setup:
+
+* Server (Jetty6) configured using Blocking IO (BIO) listeners
+* Multi-threaded client with 10 threads, running on the same host
+* Default (random-number based) Uuid generation, 1 Uuid per request
+* Default Jetty logging (logs each request to a log file)
+* Allow HTTP 1.1 pipelining to be used (default setting)
+* GET method
+
+Machine this will run on is a bit outdated PC, with single 1.5 Ghz Athlon CPU.
+
+3. First Results
+
+After starting up the server (using our handy-dandy "run-webapp.sh" script included in Subversion repository), and client (using "run-client.sh" similarly), we start getting numbers, both from server and client code. Numbers fluctuate, and it is easy to see when HotSpot JIT kicks in: initial throughput is modest (from about 100 requests per second), but increases steadily.
+
+Steady state with this system and configuration is reasonable, at around *830* requests per second (reasonable here relative to the setup, machine being used and so forth -- for readers of this blog it should be obvious that it's not anything particularly impressive per se).
+
+On system tested, cpu load gets quite high (75% user, 20% system), so that the system overall is CPU-bound (not IO), as should be expected for this setup.
+
+After this "baseline", let's try varying some of the factors listed earlier.
+
+4. Variation 1: Uuid generation method
+
+So how about changing generation method from random based one to time/location based one. This can be done by running client with argument "arg-method=TIME".
+This change yields a modest improvement: throughput increases to about *880*. It is interesting to note that (secure) random number generation is actually quite CPU intensive task, and does show in server-side profiling. Speedup is bit less than 10%; but should be higher if client (whose speed is not affected) would be running on different host.
+
+Since this method has higher throughput, let's continue using this method for remaining tests.
+
+5. Variation 2: Request size
+
+Both request and response are rather short with the default settings (at about 130 bytes both). Although request size is somewhat static for this service, we can increase response size by requesting more than one Uuid to be generated for each call (this will also increase time it takes to create Uuids, but based on profiling, this does not seem to matter a lot -- this might be different if we used Random-number based generation).
+
+So, let's see how does response message length and throughput change, when we add "arg-count=N" argument:
+
+* Requesting 10 Uuids, response message length grows to 600 bytes, and throughput goes down a notch, to around *840* rps.
+* Requesting 100 Uuid, response message length grows to 5.2 kilobytes, and throughput goes down to *540* rps.
+
+Request message length clearly has significant effect on throughput, even when bandwidth is basically unlimited, as in this case.
+
+6. Variation 3: Number of client threads
+
+Default client thread count of 10 seems reasonable -- after all, isn't multi-threading supposed to help with messaging systems. For actual networked setups it usually does, as much of the time for individual threads is spent on waiting for I/O. However, here there is not much waiting going on, so perhaps we don't need that many threads. Here are results with alternate thread counts (with argument "threadCount=N"):
+
+* 1: *1010* rps
+* 2: *990* rps
+* 4: *980* rps
+* 8: *920* rps
+* 20: *850* rps
+* 50: *840* rps
+
+Wow! A single-threaded client was actually most optimal for this setup. Thinking it through, this does make sense: we have a single-CPU system, with two separate entities (server and client). Communication overhead is nominal (http over tcp to localhost). So basic co-operative multi-tasking may well be the most optimal (in throughput sense) way to use CPU time.
+
+We will revisit this with different setup (running client on separate host), and should see bit different results. But for now, let's change baseline to "1 thread, Time/Location-based generation" to search for optimal throughput
+
+7. Variation 4: effects of request logging
+
+Althought existing logging systems (like log4j, and Jetty's default logger) should not have excessive overhead, perhaps they do have some effect on throughput, if processing rate is in thousand(s) of requests per second. To test this, let's actually disable default Jetty6 request logging (to do this, just comment out RequestLog handler in jetty.xml).
+
+Does this have any effect? Indeed: with 1 thread, we get up to *1210* requests per second (and with 10, up to *1010*). So for this particular case, it's up to 20% overhead to do per-request logging. For very high request rate services, it might, then, make sense to do more batching of request logs, or at least turn off automatic flushing of loggers that log information about every request.
+
+For remaining tests, however, let's turn logging on again.
+
+8. Variation 5: NIO vs. BIO
+
+So far we have actually used the "traditional" Jetty handler, called "BIO". This is not the default for Jetty6 any more: the preferred choice is NIO based handler. This is based on assumption that for this particular type of service, where latency is very low (effectively zero on server-side, since there's no database or file system access, or calls to other systems), NIO does not necessarily have an edge over blocking IO.
+
+And indeed, when changing handler to NIO handler, single-threaded throughput drops from *1010* to *790*; about 20% drop. Although it is not surprising that BIO is better for this case, it is interesting to note the magnitude of the difference. We should revisit this comparison later on, when moving to different setups, however: this is probably the most unfair comparison for NIO handler one could think of.
+
+9. Variation 6: POST vs. GET
+
+One more variation is that of using intuitively "heavier" access method, POST, over simple GET. The reason is that whereas all request information, when using GET, is passed as part of the URL itself, with POST client needs to separately send xml-formatted request.
+
+Testing this, we get drop similar to one we saw with previous variation: throughput drops to *790*. This is perhaps to be expected, although its effects may be smaller when client is not run on the same system. This should be one more thing to check, with more advanced setup.
+
+10. Variation 7: Disabling HTTP 1.1 Pipelining
+
+So far slowdowns have been both measurable, and modest. But there is one "de-optimization", that should have more profound effect. One of most significant improvements in HTTP 1.1 (over 1.0) was the introduction of "pipelining", ability to reuse TCP connections for making multiple HTTP connections without need to re-connect. This can significantly reduce latency (which is not a concern here), but also improve throughput.
+
+This is, indeed, where the biggest change is made: by disabling pipelining ("pipeline=false"), we go down to only *500* request per second. Or to put it another way, for this setup, pipelining essentially doubles the throughput!
+
+11. So what next?
+
+Although above results are somewhat interesting, the whole setup is less than optimal: most real world services are called by external clients, not ones co-located on the same system. So the next logical step is to expand test setup to the next simplest case: that of 1 server box, 1 client box, connected using a Local Area Network.

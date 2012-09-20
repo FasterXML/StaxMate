@@ -1,0 +1,34 @@
+Here are people who have contributed to StaxMate development:
+(version numbers in brackets indicate release in which the problem was fixed)
+
+Tatu Saloranta, tatu.saloranta@iki.fi: Author
+
+David S Boyer:
+
+  * Reported problems with hierarchic cursor traversal and contributed
+    patches to fix them, as well as matching unit tests to point out the
+    problem and verify solution
+    [0.9.1]
+
+Michel Goldstein:
+  * Reported [STAXMATE-1], another problem with hierarchic cursor
+    traversal, and contributed unit test for testing it.
+    [1.0.0]
+
+Gregg Helt:
+  * Requested [STAXMATE-25]: Allow pre-declaring namespaces with
+   "SMOutputElement.predeclareNamespace"
+    [2.0.0]
+
+Guillaume Lefebvre:
+  * Reported [STAXMATE-39]: Problems with DomConverter, building DOM trees from Stax reader.
+   [2.0.1]
+
+Rohan Hant:
+  * Reported [STAXMATE-37]: getElemStringValue causes unexpected end_document when using
+  default Sun Java6 XMLInputFactory (note: caused by Stax2 RI bug, outside of StaxMate)
+  [2.0.1]
+
+Prokopis Prokopidis:
+  * Reported [STAXMATE-41]: NPE when outputting non-NS attributes via DOM writer
+  [2.0.2]

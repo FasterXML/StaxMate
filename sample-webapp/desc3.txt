@@ -1,0 +1,62 @@
+(continuing the story of StaxMate based simple web service, part 3)
+
+The previous entry outlined expected inputs and output of the web service. So let's now have a look at how this functionality is implemented (and as a reminder, source code is available from
+http://docs.codehaus.org/display/WSTX/StaxMateSampleWebService)
+
+1. Handling input
+
+Handling of GET and POST requests is different, since the input is in different form. For anyone interested in details of GET request input processing, have a look at *doGet()* method (lines 76 - 95) of *sample.UuidServlet* class (due to simplicity of the service, it is all implemented in just one class!).
+But since we are more interested in how xml input is processed, let us have a look at *doPost()* method (lines 97 - 144).
+
+doPost() method is called by the Servlet base class, when a POST request is sent to the server. The core input handling starts on line 102, and continues through line 137 (comments are removed or modified to keep sample compact; code is unchanged):
+
+InputStream in = req.getInputStream();
+SMInputCursor rootc = SMInputFactory.rootElementCursor(SMInputFactory.getGlobalXMLInputFactory().createXMLStreamReader(in));
+rootc.getNext(); // well-formed docs have single root
+if (!"request".equals(rootc.getLocalName())) {
+  reportProblem(resp, "Root element not <request>, as expected, but <"+rootc.getLocalName()+">", null);
+  return;
+}
+// Request has no attributes, but has 0+ methods (batches)
+SMInputCursor requests = rootc.childElementCursor();
+int totalReq = 0;
+
+List<UUID> uuids = new ArrayList<UUID>();
+while (requests.getNext() != null) { // ignore or signal error? latter
+  if (!"generate-uuid".equals(requests.getLocalName())) {
+    reportProblem(resp, "Unrecognized element '"+requests.getLocalName()+"', expected <generate-uuid>", null);
+    return;
+  }
+  UUIDMethod method = determineMethod(requests.getAttrValue("method"));
+  int count = determineCount(requests.getAttrValue("count"));
+  String name = requests.getAttrValue("name");
+  checkParameters(method, count, name);
+  // (removed code for restricting max. uuids per request)
+  uuids.addAll(generateUuids(method, count, name));
+}
+
+First couple of lines create the root-level cursor: this is just needed to match the root element, since we don't care about comments or processing instructions outside of the root element. The root element is checked to verify it is of the expected type; and if not, an error message is output (details of that output will be explained in the next entry -- for now, we'll skip it).
+
+The main handling loop is done with the help of a child cursor: it will traverse over child elements of <request>, ignoring all other node types (white space that may be used for indentation, comments, processing instructions). As with the root element, we will verify that elements have the expected name. If so, necessary attributes are accessed, verified (with the help of a separate method, which need not parse any xml), and finally UUIDs are constructed and added to the result list.
+
+2. Benefits over Plain Old Stax?
+
+Example above was simple, but mostly due to the service being quite simple. The equivalent pure Stax solution would be quite simple as well. However, even this simple example shows some areas where StaxMate does or can help:
+
+* Skipping over non-relevant xml events can be automatic. White space used for indentation is seldom of interest, so why require it to be explicitly skipped? Input cursor can use a filtering: in the example case, all but START_ELEMENT events are automatically filtered. Such filtering is optional -- you can traverse over any and all events you want to see.
+* It is easier to delegate handling of sub-trees to helper methods. For example, if <generate-uuid> could have child elements (to contain more complicated arguments), it would be easy to create a separate method that takes a child iterator as argument, and only handle that sub-tree. One of chief benefits of the delegation is that the called method can not inadvertently skip more end elements than it should: it is restricted to just the sub-tree that the cursor traverses over.
+* Skipping over sub-trees is automatic. While there are no ignorable elements in this example, it is quite common for other tasks to have sub-trees that can and need to be ignored (such as annotation or comment sections of many xml vocabularies). With Stax, one has to keep track of number of open start and elements: with StaxMate, one just moves cursor past the START_ELEMENT that is root of the sub-tree, and all enclosed events are ignored as well.
+* Collecting textual content that an element contains is trivial: just call *cursor.collectDescendantText()* and you will get a String containing contents of all text nodes under element the cursor currently points to.
+
+3. Further Improvements on Input Side
+
+Although code as shown is quite simple, I realized during writing this entry that it could be further simplified. For example:
+
+* It seems unnecessary that application needs to create XMLStreamReader separately: instead, StaxMate could abstract away these details within its own SMInputFactory
+* In addition to just basic event type filtering, it would seem reasonable to have standard filters that allow skipping not only all non-element events, but also elements with names except for specified ones. Specifically, perhaps the child cursor should only return <generate-uuid> events, and ignore any others (if such exist). This would further simplify checking; if no strict validation is needed.
+
+4. To be Continued...
+
+So much for the input side: the next entry will deal with the output side.
+
+Stay tuned!

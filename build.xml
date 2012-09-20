@@ -1,0 +1,468 @@
+<?xml version="1.0" standalone='yes'?>
+
+    <project name="StaxMate" basedir="." default="readme">
+
+    <!-- Version information -->
+    <property name="IMPL_TITLE" value="StaxMate" />
+    <property name="IMPL_VERSION" value="2.0.2" />
+    <property name="IMPL_VENDOR" value="http://staxmate.codehaus.org" />
+
+    <property name="REQ_STAX2_VERSION" value="3.0.4" />
+
+    <property name="BASENAME" value="staxmate-${IMPL_VERSION}" />
+
+    <!-- Source directories -->
+    <property name="dir.src" location="${basedir}/src" />
+    <property name="dir.src.java" location="${dir.src}/main/java" />
+    <property name="dir.src.test" location="${dir.src}/test/java" />
+    <property name="dir.src.tools" location="${dir.src}/tools/java" />
+    <!-- Libs -->
+    <property name="dir.lib" location="${basedir}/lib" />
+    <!-- Build-related -->
+    <property name="dir.build" location="${basedir}/target" />
+    <!-- 03-Dec-2008, tatu: Let's use same dir as what Maven uses...
+      -->
+    <property name="dir.classes.main" location="${dir.build}/classes" />
+    <!-- Documentation -->
+    <property name="dir.javadoc" location="${dir.build}/javadoc" />
+    <!-- Test suite -->
+    <property name="dir.test" location="${basedir}/test" />
+    <property name="dir.classes.test" location="${dir.test}/classes" />
+    <property name="dir.test.results" location="${dir.test}/results" />
+    <property name="dir.test.xmlresults" location="${dir.test.results}/xml" />
+    <!-- Distribution -->
+    <property name="dir.dist" location="${basedir}/dist" />
+
+    <!-- jars needed for compilation -->
+    <path id="classpath.compile">
+        <fileset dir="${dir.lib}" includes="*.jar" />
+    </path>
+
+    <path id="junit-libs">
+       <fileset dir="${dir.lib}">
+            <include name="junit/junit*.jar" />
+       </fileset>
+    </path>
+
+    <!-- Then paths to libs needed by Stax implementations -->
+    <path id="woodstox-libs">
+       <fileset dir="${dir.lib}" includes="wstx/*.jar" />
+    </path>
+    <path id="sjsxp-libs">
+       <fileset dir="${dir.lib}" includes="sjsxp/*.jar" />
+    </path>
+    <path id="aalto-libs">
+       <fileset dir="${dir.lib}" includes="aalto/*.jar" />
+    </path>
+
+    <!-- Source files to include in source packages (tar, zip) -->
+    <patternset id="dist-src-files">
+          <include name="src/**/*.java" />
+          <include name="src/java/**/*.html" />
+          <include name="release-notes/*" />
+          <include name="*.txt" />
+          <include name="build.xml" />
+          <include name="project.xml" />
+          <!-- need jars too; at least the api jar, but let's copy
+               all for now... it's nice to have the unit tests in there
+               too. This way src packages are proper supersets of binary ones
+            -->
+          <include name="lib/*.jar" />
+          <include name="lib/junit/*.jar" />
+    </patternset>
+
+
+    <!--*********************************************************************-->
+    <!-- The readme target shows a brief description of all targets          -->
+    <!-- supported by this ant build file                                    -->
+    <!--*********************************************************************-->
+    <target name="readme">
+        <echo message = "${ant.project.name}'s available targets" />
+        <echo message = "---------------------------------------------------" />
+        <echo message = "1)  readme - Displays this information (default target)." />
+        <echo message = "2)  clean - Remove any generated files/directories." />
+        <echo message = "3)  compile - Compile all non-test ${ant.project.name} code." />
+        <echo message = "4)  jar - Compile and create jar for non-test ${ant.project.name} code." />
+        <echo message = "5)  javadoc - Generate ${ant.project.name} code documentation." />
+        <echo message = "6)  test.compile - Compile ${ant.project.name} code and test code" />
+        <echo message = "       for JUnit tests." />
+        <echo message = "7)  test - Run JUnit tests." />
+        <echo message = "       Reports results and generates html output." />
+        <echo message = "8)  dist - Create distribution directory and copy necessary files there" />
+        <echo message = "9) all - Run the clean, compile, javadoc," />
+        <echo message = "         test and dist targets." />  
+    </target>
+
+    <target name="prepare">
+        <!-- make build directories -->
+        <mkdir dir="${dir.build}" />
+        <mkdir dir="${dir.classes.main}" />
+
+        <!-- make docs directories -->
+        <mkdir dir="${dir.javadoc}" />
+
+        <!-- make test output directories -->
+        <mkdir dir="${dir.test}" />
+        <mkdir dir="${dir.classes.test}" />
+        <mkdir dir="${dir.test.results}" />
+        <mkdir dir="${dir.test.xmlresults}" />
+
+        <!-- and finally distribution dir -->
+        <mkdir dir="${dir.dist}" />
+    </target>
+
+    <target name="all" depends="clean,javadoc,test,dist">
+        <!-- This target simply depends on others to do its job -->
+    </target>
+
+    <!--*********************************************************-->
+    <!-- clean - Removes all generated files/directories.        -->
+    <!--*********************************************************-->
+    <target name="clean">
+        <delete dir="${dir.build}"/>
+        <delete dir="${dir.test}"/>
+        <delete dir="${dir.dist}"/>
+        <delete file="cobertura.ser" />
+    </target>
+
+    <!--*********************************************************-->
+    <!-- Compilation -->
+    <!--*********************************************************-->
+
+    <target name="compile" depends="prepare">
+        <!-- 02-Sep-2008, tatu: Baseline is 1.5 for now (StaxMate 1.x)
+          -->
+        <javac srcdir="${dir.src.java}" destdir="${dir.classes.main}" debug="true"
+         source="1.5" target="1.5" includeantruntime="false"
+        >
+            <include name="org/codehaus/staxmate/**/*.java" />
+            <classpath refid="classpath.compile" />
+        </javac>
+        <javac srcdir="${dir.src.tools}" destdir="${dir.classes.main}" debug="true"
+         source="1.5" target="1.5" includeantruntime="false"
+        >
+            <include name="**/*.java" />
+            <classpath refid="classpath.compile" />
+        </javac>
+    </target>
+
+    <!--*********************************************************-->
+    <!-- Packaging... -->
+    <!--*********************************************************-->
+ 
+    <target name="dist" depends="compile,jars,src-dist,sample-dist,javadoc">
+       <!-- First, let's copy the binary jars to dist -->
+       <copy todir="${dir.dist}">
+           <fileset dir="${dir.build}">
+             <include name="staxmate-*.jar" />
+           </fileset>
+       </copy>
+       <!-- Then copy javadocs -->
+       <copy todir="${dir.dist}">
+         <fileset dir="${dir.build}" includes="javadoc/**/*" />
+       </copy>
+       <!-- Plus, let's also just copy README and compatibility files, in
+            addition to being included in source package
+         -->
+       <copy todir="${dir.dist}" >
+            <fileset dir="." includes="release-notes/*" />
+            <fileset dir="." includes="*.txt" />
+       </copy>
+       <copy todir="${dir.dist}">
+            <fileset dir="${dir.src}/maven" includes="*.pom" />
+            <globmapper from="*.pom" to="*-${IMPL_VERSION}.pom" />
+            <filterset>
+              <filter token="VERSION" value="${IMPL_VERSION}" />
+              <filter token="REQ_STAX2_VERSION" value="${REQ_STAX2_VERSION}" />
+            </filterset>
+       </copy>
+        <xmlvalidate lenient="true">
+        <!-- lenient: check only well-formedness, no dtd/schema (yet) -->
+            <fileset dir="${dir.src}/maven" includes="*.pom" />
+        </xmlvalidate>
+    </target>
+
+    <target name="src-dist">
+       <tar basedir="${basedir}" destfile="${dir.dist}/staxmate-src-${IMPL_VERSION}.tar">
+         <patternset refid="dist-src-files" />
+       </tar>
+       <gzip zipfile="${dir.dist}/staxmate-src-${IMPL_VERSION}.tar.gz"
+         src="${dir.dist}/staxmate-src-${IMPL_VERSION}.tar" />
+       <delete file="${dir.dist}/staxmate-src-${IMPL_VERSION}.tar" />
+       <zip basedir="${basedir}" destfile="${dir.dist}/staxmate-src-${IMPL_VERSION}.zip">
+         <patternset refid="dist-src-files" />
+       </zip>
+      <!-- And create source jar for IDE support -->
+       <jar jarfile="${dir.dist}/staxmate-${IMPL_VERSION}-sources.jar" filesonly="true" compress="true" >
+         <fileset dir="${basedir}">
+           <patternset refid="dist-src-files" />
+         </fileset>
+       </jar>
+    </target>
+
+    <target name="sample-dist">
+       <tar basedir="${basedir}/sample-webapp" destfile="${dir.dist}/sample-webapp-${IMPL_VERSION}.tar">
+          <include name="*.sh" />
+          <include name="src/**/*.java" />
+          <include name="html/*.html" />
+          <include name="cfg/*" />
+          <include name="jetty/**/*" />
+          <include name="build.xml" />
+          <include name="lib/*.jar" />
+       </tar>
+       <gzip zipfile="${dir.dist}/sample-webapp-${IMPL_VERSION}.tar.gz"
+         src="${dir.dist}/sample-webapp-${IMPL_VERSION}.tar" />
+       <delete file="${dir.dist}/sample-webapp-${IMPL_VERSION}.tar" />
+    </target>
+
+    <target name="jars" depends="compile">
+        <!-- First, primary jar, without Stax2 classes -->
+        <jar jarfile="${dir.build}/${BASENAME}.jar" filesonly="true" >
+          <manifest>
+            <attribute name="Built-By" value="${user.name}"/>
+            <attribute name="Implementation-Title"   value="${IMPL_TITLE}"/>
+            <attribute name="Implementation-Version" value="${IMPL_VERSION}"/>
+            <attribute name="Implementation-Vendor"  value="${IMPL_VENDOR}"/>
+          </manifest>
+          <fileset dir="${dir.classes.main}">
+             <include name="org/codehaus/staxmate/**/*.class" />
+             <exclude name="org/codehaus/staxmate/samples/*.class" />
+          </fileset>
+          <fileset dir=".">
+            <include name="LICENSE.txt" />
+          </fileset>
+        </jar>
+    </target> 
+
+    <target name="javadoc" depends="prepare">
+        <!-- Build a dirpath that contains just the "source" tree -->
+        <javadoc windowtitle="${ant.project.name}" destdir="${dir.javadoc}" 
+          author="true"  version="true">
+            <packageset dir="${dir.src.java}" defaultexcludes="yes">
+                <include name="org/codehaus/staxmate/**" />
+                <exclude name="org/codehaus/staxmate/samples/**" />
+            </packageset>
+            <classpath refid="classpath.compile" />
+        </javadoc>
+    </target> 
+
+    <!--*********************************************************************-->
+    <!-- Tasks from here down are in support of junit tests.                 -->
+    <!--*********************************************************************-->
+
+    <target name="test.compile" depends="jars">
+        <javac srcdir="${dir.src.test}" destdir="${dir.classes.test}" debug="true"
+         source="1.5" target="1.5" includeantruntime="false"
+        >
+            <include name="**/*.java" />
+            <classpath refid="classpath.compile" />
+            <classpath>
+                <pathelement path="${dir.classes.main}"/>  
+                <path refid="junit-libs"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="test" depends="test.compile">
+        <!-- showoutput 'yes' to allow outputting debug msgs... -->
+        <junit fork="no" printsummary="yes" haltonfailure="no"
+         showoutput="yes">
+            <batchtest fork="no" todir="${dir.test.xmlresults}">
+                <fileset dir="${dir.classes.test}">
+                    <exclude name="**/*$*.class"/>
+                    <include name="**/Test*.class"/>
+                </fileset>
+            </batchtest>
+            <formatter type="xml" />
+            <classpath refid="classpath.compile" />
+            <classpath>
+                <pathelement path="${dir.classes.main}" />
+                <pathelement location="${dir.classes.test}" /> 
+                <path refid="junit-libs"/>
+                <path refid="woodstox-libs"/>
+            </classpath>
+        </junit>
+
+        <junitreport todir="${dir.test.results}">
+            <fileset dir="${dir.test.xmlresults}">
+                <include name="TEST-*.xml" />
+            </fileset>
+            <report todir="${dir.test.results}" />
+        </junitreport>
+   </target>
+
+    <!-- 16-Jun-2008, tatu: let's test compatibility with
+        sjsxp as well as woodstox, shall we
+      -->
+    <target name="test-sjsxp" depends="test.compile">
+        <junit fork="no" printsummary="yes" haltonfailure="no" showoutput="yes">
+            <batchtest fork="no" todir="${dir.test.xmlresults}">
+                <fileset dir="${dir.classes.test}">
+                    <exclude name="**/*$*.class"/>
+                    <include name="**/Test*.class"/>
+                </fileset>
+            </batchtest>
+            <formatter type="xml" />
+            <classpath refid="classpath.compile" />
+            <classpath>
+                <pathelement path="${dir.classes.main}" />
+                <pathelement location="${dir.classes.test}" /> 
+                <path refid="junit-libs"/>
+                <path refid="sjsxp-libs"/>
+            </classpath>     
+        </junit>
+        <junitreport todir="${dir.test.results}">
+            <fileset dir="${dir.test.xmlresults}">
+                <include name="TEST-*.xml" />
+            </fileset>
+            <report todir="${dir.test.results}" />
+        </junitreport>
+   </target>
+
+    <!-- 30-Jul-2008, tatu: Also, let's check out Aalto
+        (note: can't yet add jars into repo, due to licensing questions)
+      -->
+    <target name="test-aalto" depends="test.compile">
+        <junit fork="no" printsummary="yes" haltonfailure="no" showoutput="yes">
+            <batchtest fork="no" todir="${dir.test.xmlresults}">
+                <fileset dir="${dir.classes.test}">
+                    <exclude name="**/*$*.class"/>
+                    <include name="**/Test*.class"/>
+                </fileset>
+            </batchtest>
+            <formatter type="xml" />
+            <classpath refid="classpath.compile" />
+            <classpath>
+                <pathelement path="${dir.classes.main}" />
+                <pathelement location="${dir.classes.test}" /> 
+                <path refid="junit-libs"/>
+                <path refid="aalto-libs"/>
+            </classpath>     
+        </junit>
+        <junitreport todir="${dir.test.results}">
+            <fileset dir="${dir.test.xmlresults}">
+                <include name="TEST-*.xml" />
+            </fileset>
+            <report todir="${dir.test.results}" />
+        </junitreport>
+   </target>
+
+    <!-- Running a single Unit Test -->
+    <target name="test.single" depends="test.compile">
+         <fail unless="test" message="Must define -Dtest" />
+       <!-- showoutput 'yes' to allow outputting debug msgs... -->
+        <junit fork="no" maxmemory="128M" showoutput="yes" printsummary="yes">
+          <formatter type="plain" usefile="no" />
+          <test name="${test}" />
+          <classpath refid="classpath.compile" />
+          <classpath>
+                <pathelement path="${dir.classes.main}" />
+                <pathelement location="${dir.classes.test}" /> 
+                <path refid="junit-libs"/>
+                <path refid="woodstox-libs"/>
+          </classpath>     
+        </junit>
+    </target>
+
+    <target name="test.single.sjsxp" depends="test.compile">
+         <fail unless="test" message="Must define -Dtest" />
+       <!-- showoutput 'yes' to allow outputting debug msgs... -->
+        <junit fork="no" maxmemory="128M" showoutput="yes" printsummary="yes">
+          <formatter type="plain" usefile="no" />
+          <test name="${test}" />
+          <classpath refid="classpath.compile" />
+          <classpath>
+                <pathelement path="${dir.classes.main}" />
+                <pathelement location="${dir.classes.test}" /> 
+                <path refid="junit-libs"/>
+                <path refid="sjsxp-libs"/>
+          </classpath>     
+        </junit>
+    </target>
+
+    <target name="test.single.aalto" depends="test.compile">
+         <fail unless="test" message="Must define -Dtest" />
+       <!-- showoutput 'yes' to allow outputting debug msgs... -->
+        <junit fork="no" maxmemory="128M" showoutput="yes" printsummary="yes">
+          <formatter type="plain" usefile="no" />
+          <test name="${test}" />
+          <classpath refid="classpath.compile" />
+          <classpath>
+                <pathelement path="${dir.classes.main}" />
+                <pathelement location="${dir.classes.test}" /> 
+                <path refid="junit-libs"/>
+                <path refid="aalto-libs"/>
+          </classpath>     
+        </junit>
+    </target>
+
+    <!--*********************************************************************-->
+    <!-- Tasks for Code coverage analysis (using Cobertura) -->
+    <!--*********************************************************************-->
+
+    <!-- And/or support for Cobertura code coverage tool -->
+    <property name="cobertura.coverage.dir" value="${dir.build}/coverage" />
+    <path id="cobertura-libs">
+      <fileset dir="${dir.lib}/cobertura" includes="*.jar" />
+    </path>
+    <taskdef classpathref="cobertura-libs" resource="tasks.properties" />
+
+    <target name="build.coverage" depends="test.compile">
+      <!-- First, need to instrument classes -->
+      <property name="cobertura.instr.dir" value="${dir.build}/cobertura-instr" />
+      <mkdir dir="${cobertura.coverage.dir}" />
+      <cobertura-instrument todir="${cobertura.instr.dir}">
+        <fileset dir="${dir.classes.main}">
+          <include name="org/codehaus/staxmate/**/*.class"/>
+        </fileset>
+      </cobertura-instrument>
+
+      <junit fork="once" printsummary="yes" haltonfailure="no" showoutput="yes"
+        maxmemory="100M"
+      >
+        <sysproperty key="net.sourceforge.cobertura.datafile" file="${basedir}/cobertura.ser" />
+            <batchtest fork="no" todir="${dir.test.xmlresults}">
+                <fileset dir="${dir.classes.test}">
+                    <exclude name="**/*$*.class"/>
+                    <include name="**/Test*.class"/>
+                </fileset>
+            </batchtest>
+            <formatter type="xml" />
+            <!-- Order is important: must first have instrumented classes -->
+            <classpath location="${cobertura.instr.dir}" />
+
+            <!-- Stax, Stax2 APIs: -->
+            <classpath refid="classpath.compile" />
+            <!-- Actual tests: -->
+            <classpath path="${dir.classes.test}" />
+            <!-- And run them against Woodstox (known good impl) -->
+            <classpath refid="woodstox-libs" />
+            <!-- Cobertura support: -->
+            <classpath refid="cobertura-libs" />
+            <classpath>
+                <!-- Note: while this may seem superfluous, it is actually
+                     needed because Cobertura does not instrument things
+                     like interfaces. So some of the class files are
+                     needed from non-instrumented location
+                  -->
+                <pathelement path="${dir.classes.main}" />
+                <path refid="junit-libs"/>
+            </classpath>     
+        </junit>
+        <!-- and then reporting -->
+        <cobertura-report format="html" destdir="${cobertura.coverage.dir}" >
+          <fileset dir="${dir.src.java}">
+            <include name="**/*.java" />
+          </fileset>
+        </cobertura-report>
+
+        <!-- Let's also report junit results? (at least if they fail) -->
+        <junitreport todir="${dir.test.results}">
+            <fileset dir="${dir.test.xmlresults}">
+                <include name="TEST-*.xml" />
+            </fileset>
+            <report todir="${dir.test.results}" />
+        </junitreport>
+    </target>
+
+</project>

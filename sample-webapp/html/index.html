@@ -1,0 +1,164 @@
+<html>
+  <head>
+    <title>StaxMate UUID Generator</title>
+<script language="javascript">
+
+// First, simple Ajax stuff: should be moved to a lib for real web apps:
+function createAjaxRequest()
+{
+  if (window.XMLHttpRequest) { // Firefox etc
+    return new XMLHttpRequest();
+  }
+  if (window.ActiveXObject) { // IE
+    return new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  return null;
+}
+
+function sendAjaxRequest(url, handler, args, errorHandler)
+{
+  var req = createAjaxRequest();
+  if (!req) {
+    alert("Could not create XMLHttpRequest(): unsupported browser?\nYou may need to upgrade to FireFox");
+    return null;
+  }
+  req.onreadystatechange = createCallback(req, handler, args, errorHandler);
+  // Let's prevent caching by adding a 'random' arg:
+  var ix = url.indexOf("?");
+  var rnd = (new Date()).getMilliseconds();
+  if (ix > 0) {
+    url += "&rnd="+rnd;
+  } else {
+    url += "?rnd="+rnd;
+  }
+  req.open("GET", url, true);
+  req.send(null);
+  return req;
+}
+
+function createCallback(reqObj, method, args, errorHandler)
+{
+  return function() {
+      if (reqObj.readyState == 4) {
+        if (reqObj.status == 200) { // ok?
+          method(reqObj, args);
+        } else {
+          if (errorHandler) {
+            errorHandler(reqObj, args);
+          } else {
+            alert("There was a problem retrieving the request data (and no error handler):\n" + reqObj.statusText);
+          }
+        }
+      }
+  }
+}
+
+function generate()
+{
+  var inputForm = document.inputForm;
+  if (!inputForm) {
+    return alert("Can not find form 'document.inputForm'.");
+  }
+  var elems = inputForm.elements;
+  if (!elems || !elems.length) {
+    return alert("No form elements found from form 'document.inputForm'.");
+  }
+  var str = "generate-uuid?";
+  // Let's just pack up all forms args as they are (names chosen so it'll work)
+  for (var i = 0; i < elems.length; ++i) {
+    if (i > 0) {
+       str += "&";
+    }
+    var elem = elems[i];
+    str += elem.name + "=" + escape(elem.value);
+  }
+  document.getElementById("output").innerHTML = "Request sent, waiting for response...";
+  sendAjaxRequest(str, responseOk, new Date().getTime(), responseError);
+}
+
+function responseOk(reqObj, millis)
+{
+  var resultHTML = '';
+  var time = new Date().getTime() - millis;
+  // Result is xml... need to traverse:
+  var result = reqObj.responseXML;
+  // First, did we get an error?
+  var elem = result.getElementsByTagName("error");
+
+  if (elem && elem.length > 0) {
+    var msg = elem[0].getElementsByTagName("msg")[0].firstChild.nodeValue;
+    resultHTML = "<span style='color: red;'>Request error: '"+msg+"'</span>";
+  } else {
+    elem = result.getElementsByTagName("response");
+    if (!elem || elem.length == 0) {
+      resultHTML = "<span style='color: yellow;'>Request error: could not find main 'response' element from response ("+escape(reqObj.responseText)+")</span>";
+    } else {
+      elem = elem[0]; // just one response elem, use that
+      resultHTML = "Request succeeded (took "+time+" ms)\n<br />"
+      var uuidElems = elem.getElementsByTagName("uuid");
+      resultHTML += "Results ("+uuidElems.length+"):\n";
+      resultHTML += "<table border='1' rules='1'>";
+      for (var i = 0; i < uuidElems.length; ++i) {
+       resultHTML += "\n<tr><td>" + uuidElems[i].firstChild.nodeValue + "</td></tr>";
+      }
+      resultHTML += "</table>";
+    }
+  }
+  document.getElementById("output").innerHTML = resultHTML;
+}
+
+function responseError(reqObj)
+{
+  document.getElementById("output").innerHTML = "Request failed ("+reqObj.status+"):\n"+reqObj.statusText;
+}
+
+</script>
+  </head>
+  <body>
+    <h1>StaxMate UUID Generator</h1>
+
+How would you like to generate your UUIDs (a.k.a GUIDs) today?
+<form name='inputForm'>
+
+<table border='1' rules='1' cellpadding='2'>
+ <tr>
+<td>Method:</td>
+<td><select name='method' size='3'>
+  <option value='RANDOM' selected='true'>Random</option>
+  <option value='TIME'>Time+Location</option>
+  <option value='NAME'>Name-based (hash)</option>
+</select></td>
+  </tr>
+
+ <tr>
+<td>Count:</td>
+<td><input type='text' size='4' name='count' value='1'></input> (1 - 100)</td>
+  </tr>
+
+ <tr>
+<td>Name: (for Name-based)</td>
+<td><input type='text' size='60' name='name' enabled='false'></input></td>
+  </tr>
+
+</table>
+
+<p>
+<input type='button' name='generate' value='Generate!'
+onclick='window.generate();'
+></input>
+</p>
+</form>
+
+<!-- and then output stuff: -->
+
+Output:
+<table border='1' rules='1'>
+ <tr>
+<td><div id='output'>
+No UUIDs generated yet!
+</div>
+</td></tr>
+</table>
+
+  </body>
+</html>

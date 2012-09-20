@@ -1,0 +1,16 @@
+* Reader side:
+   * Encapsulate XMLInputFactory (in SMInputFactory?); to make configuring
+     factory instances easier.
+   * Consider rewriting nesting, for example by making each cursor
+     remember depth of its start tag, make context keep track of depth:
+     this should simplify state tracking, make the system more robust.
+   * Seriously investigate using XPath (Jaxen?)
+
+* Writer side:
+   * Encapsulate XMLOutputFactory (in SMOutputFactory?); to make configuring
+     factory instances easier.
+   * Buffer attributes properly; allow for resetting for buffered instances
+   * Verify that buffered instances with "wrong" contexts are not added.
+   * Add pass-through method to copy events from a XMLStreamReader or
+     SMIterator?
+

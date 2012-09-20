@@ -1,0 +1,66 @@
+(continuing the story of StaxMate based simple web service, part 4)
+
+After having a closer look at the input side, it is now time to do the same for the output side (the source code is still available from
+http://docs.codehaus.org/display/WSTX/StaxMateSampleWebService).
+
+1. Handling output
+
+After processing the input, there are two kinds of output that may need to be output, both in xml: error messages for input or processing problems, and result messages for succesful generation of requested uuids. Sequence of things to do is similar between the two: error case is handled by method *reportProblem()* (lines 180 - 214), and the success case by *writeResponse()* (lines 146 - 165), so let's just go over writeResponse() (and *writeDocWithRoot()* that is called by it):
+
+void writeResponse(HttpServletResponse resp, List<UUID> uuids,
+                  int totalRequested)
+    throws IOException, XMLStreamException
+{
+    resp.setContentType("text/xml");
+    OutputStream out = resp.getOutputStream();
+    SMOutputElement rootElem = writeDocWithRoot(out, "response");
+    for (UUID uuid : uuids) {
+        rootElem.addElement("uuid").addCharacters(uuid.toString());
+    }
+    if (totalRequested > uuids.size()) { // truncated?
+        rootElem.addComment("had to truncate "+(totalRequested - uuids.size())+" uuids; will only generate up to "+MAX_UUIDS_PER_REQUEST+" UUIDs per call");
+    }
+    // Need to close the root, to ensure all elements closed, flushed
+    ((SMOutputDocument)rootElem.getParent()).closeRoot();
+    out.flush();
+}
+SMOutputElement writeDocWithRoot(OutputStream out, String nonnsRootName)
+    throws XMLStreamException
+{
+    SMOutputDocument doc = SMOutputFactory.createOutputDocument(SMOutputFactory.getGlobalXMLOutputFactory().createXMLStreamWriter(out, "UTF-8"), "1.0", "UTF-8", true);
+    // Let's indent for debugging purposes (not for production)
+    // These settings give linefeed, plus 2 spaces per level
+    doc.setIndentation("\n                                    ", 1, 2);
+    return doc.addElement(nonnsRootName);
+}
+
+First couple of lines get the output stream to use (as you may recall, it is generally preferable to pass *OutputStream*s instead of *Writer*s, to Stax and StaxMate components). 
+Writing of the root element is separated as a helper method, since it is needed from multiple places (helper method could also deal with OutputStream generation in this case). Creation of StaxMate output document (which acts as the container for root-level entities, most important of which is the root element) is done in style similar to that of creating the root cursor.
+The last thing done before adding the root element is to enable indentation -- although it is not really needed for production systems, it may be nice for debugging purposes, or when generating human editable xml documents.
+
+Generating actual output is, well, trivial: since the root element directly contains <uuid> elements, code just loops over the list, creates the enclosing element, and adds textual serialization of the uuid to the element. Quoting of special characters ('<', '&', ...) is done if and as needed by the underlying stream writer. One minor addition over plain vanilla output is that if number of uuids generated was truncated (since service caps max number to 100 per request), an xml comment is added after elements.
+
+The only unusual method call that is needed is call to *SMOutputDocument.closeRoot()*: this is needed so that all possibly open start elements are closed. Since code at this point does not have direct reference to the output document, we will just refer to it via parent reference (the alternative would have been to hold on to the document reference -- that would have saved us from having to do the case).
+
+2. Benefits over Plain Old Stax?
+
+As with input handling, this simple service would be quite simple to implement using any xml output technology. But there are some areas where StaxMate aims to improve productivity of developers, over using Stax API directly. For example:
+
+* Iou don't have to worry about closing all of those start elements: as soon as you add a new sibling, previous one gets closed, recursively. You will never end up with unmatched tags.
+* It is easy to pass these output scopes to other methods (or even sub-systems): pass an *SMOutputElement* to a method, and it will only be able to add entries within the implied sub-tree.
+* Namespace binding is fully automatic, very efficient, safe (never miss a namespace declaration again), and easy to use .While the example didn't use namespaces, many other use cases do, as most xml standard nowadays use namespaces for modularization. Using namespaces with StaxMate is a breeze.
+* Output calls can be easily chained (for deep single-branched sub-trees), resulting in compact code.
+* Output indentation is easy to enable (and disable). It is one of most commonly requested features for Stax, but not implemented currently by any implementations (there are however other stax helper libraries available that do it too).
+* It is possible to use limited amount of memory buffering to do out-of-order outputting: for example, it is possible to "freeze" output of a sub-tree for as long as necessary, to be able to add attributes to the root element of the sub-tree, and "release" buffered sub-tree as soon as attribute or attributes are added.
+
+Many of potential benefits listed above are similar to the ones that exist on the input side. This is not a coincidence: StaxMate tries to use similar concepts on both sides, where applicable.
+
+3. Further Improvements on the Output Side
+
+One thing that could be further simplified is the construction of the root output context. It should not be necessary to have to use raw Stax API for creating the underlying *XMLStreamReader*: the details could (and should) be encapsulated within *SMOutputFactory*
+
+4. Next Steps
+
+Now that we have covered the actual service, it will be time to focus on the client side, and show how service can be used. It may also be interesting to know what kind of throughput is to be expected from a simple service like this.
+
+To be continued...

@@ -1,0 +1,32 @@
+1. Problem to Solve
+
+First challenge in writing a sample web application to showcase StaxMate is that of finding a simple (but hopefully non-trivial) problem to solve. This task is made difficult by the fact that many highly useful services have already been implemented: the problem of returning cheerful "Hello World" greetings has been adequately solved; likewise for the ever-useful "Echo the string I send" use case. And even highly complicated tasks such as calculating sum of two integer numbers have been automated as highly scalable web services.
+
+Now, I could of course find an interview question to which people may need to find answers ("How do I find all palindrome substrings in input String?", "Find me to numbers of a List that add to given number" and so on), but that feels like helping cheaters. And finally, anything that involves actual storing and retrieving of data is immensely boring, and besides it is something I need to do at work.
+
+2. Very Funny... But What Are You Really Going to Write?
+
+Given above constraints, I decided I should just recycle something I have already written earlier. And to this end, I just happen to be the author of Java Uuid Generator (JUG)... so, how about just writing a web service that allows one to ask server to generate bunch of UUIDs? Yup, that oughta do it. Couple that with an invocation to Echo service, and perhaps add 128-bit UUID numbers, and we should have a fully functional SOA system!
+
+3. Approach
+
+Although by far the simplest way to implement such a web service would be to maybe just fire off a cgi script (after all, uuidgen exists for enough platforms), that wouldn't have much use of StaxMate. On the other hand, I could go for full Soap implementation, write 1000 lines of code with help of great automation toolkits that save me from writing 100 lines of code. But that would mostly showcase these helper toolkits. And great as they are, I'd like to have at least maybe 5% of code do actual xml tasks for which StaxMate was written. And since that code is maybe 5 lines all in all, it seems like I better hand write about 100 lines of glue code around xml handling.
+
+Thus, I will write a simplish "REST" (aka Plain Old Xml, POX, over Http) web service. To make it slightly easier to demo, as well as access using but a browser, I will make it accept both GET and POST requests. Latter is mostly there to give an excuse to use StaxMate parsing: but in both cases, output will be xml written using StaxMate. The main difference is then that with GET, all arguments come as query parameters, whereas with POST, request is in xml. And just to show off, POST request can use batching, that is, request multiple ranges of UUIDs to be generated. GET request can only create multiple UUIDs of same type (which almost always is enough for your needs).
+
+To top it off, the service as implemented will be invocable in at least 3 ways:
+
+* Typing in URL on your favourite browser, and see the xml response as it is returned
+* Using the simple but trendy single html page, powered by some Ajax mojo, to do the same
+* Using a simple client class from your application, to encapsulate details of sending request, and parsing resulting xml.
+
+As of now, first 2 methods have been implemented: third will be implemented in near future (as in next 2 or 3 months), depending on how high is the ad revenue for this article. :-)
+
+4. Sneak peek
+
+At this point, the service itself exist, and all the needed pieces are downloadable from StaxMate Subversion repository: links to Subversion as well as direct links can be found from this page. Page should explain simple procedure to deploy the service; simple being relative term, and referring to someone who has ever deployed a servlet using a web archive (.war file).
+Unfortunately, at this point I do not have a publicly accessible Servlet-enabled server to run the web service on, but if anyone wants to host it, I would be more than willing to link to such instance (or, if you'd rather wait to see how much it would add, I am planning to load test the service in "near future", which will be after client library gets written).
+
+In the next blog entry, I will outline the code snippets that actually use StaxMate for input (parsing of input message, when serving POST requests) and output (when writing response message, either an error, or success message with set of generated UUIDs).
+
+Stay tuned!
