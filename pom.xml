@@ -121,7 +121,7 @@ It builds on top of a Stax (JSR-173) compliant XML processors such as Woodstox o
           <configuration>
               <encoding>UTF-8</encoding>
               <links>
-                  <link>http://java.sun.com/javase/6/docs/api/</link>
+                  <link>http://docs.oracle.com/javase/6/docs/api/</link>
               </links>
           </configuration>
        </plugin>
@@ -231,53 +231,5 @@ org.codehaus.staxmate.dom
             </build>
         </profile>
     </profiles>
-
-  <!-- 20-Feb-2009, tatu: Let's default to Codehaus Maven2
-       repository for now, shorter propagation delay
-   -->
-  <repositories>
-    <repository>
-      <id>codehaus</id>
-      <name>Codehaus</name>
-      <layout>default</layout>
-      <url>http://repository.codehaus.org</url>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>daily</updatePolicy>
-        <checksumPolicy>warn</checksumPolicy>
-      </releases>
-    </repository>
-    <repository>
-      <id>maven</id>
-      <name>Maven</name>
-      <layout>default</layout>
-      <url>http://repo1.maven.org/maven2</url>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>daily</updatePolicy>
-        <checksumPolicy>warn</checksumPolicy>
-      </releases>
-    </repository>
-
-  </repositories>
-
-  <!-- Let's also try to automate deployments?
-    -->
-  <distributionManagement>
-    <repository>
-      <uniqueVersion>false</uniqueVersion>
-      <id>codehaus-release</id>
-      <name>Codehaus Maven2 Repository</name>
-      <url>dav:https://dav.codehaus.org/repository/staxmate</url>
-      <layout>default</layout>
-    </repository>
-    <snapshotRepository>
-      <uniqueVersion>true</uniqueVersion>
-      <id>codehaus-snapshot</id>
-      <name>Codehaus Snapshots</name>
-      <url>dav:https://dav.codehaus.org/snapshots.repository/staxmate</url>
-      <layout>default</layout>
-    </snapshotRepository>
-  </distributionManagement>
 
 </project>
