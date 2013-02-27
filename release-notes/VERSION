@@ -3,7 +3,7 @@ Version: 2.2.0 (xx-Feb-2103)
 
 #1: Expose access to binary data, SMInputCursor.getAttrBinaryValue(),
    getElemBinaryValue()
-#2: Allow writing binary data using SMOutputContainer.addValue(byte[]),
+#3: Allow writing binary data using SMOutputContainer.addValue(byte[]),
    SMOutputElement.addAttribute(String, byte[])
 
 ------------------------------------------------------------------------
