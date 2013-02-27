@@ -28,15 +28,15 @@ import org.codehaus.stax2.XMLStreamWriter2;
 public final class SMOutputContext
 {
     /*
-    //////////////////////////////////////////////////////
-    // Constants
-    //////////////////////////////////////////////////////
-    */
+    /**********************************************************
+    /* Constants
+    /**********************************************************
+     */
 
     /* Any documents really use more than 16 explicit namespaces?
      * Probably not; those that do can expand the stack as needed
      */
-    final static int DEF_NS_STACK_SIZE = 16;
+    protected final static int DEF_NS_STACK_SIZE = 16;
 
     protected final static SMNamespace NS_EMPTY =
         new SMGlobalNamespace("", XMLConstants.DEFAULT_NS_PREFIX);
@@ -47,7 +47,7 @@ public final class SMOutputContext
         new SMGlobalNamespace(XMLConstants.XMLNS_ATTRIBUTE,
                               XMLConstants.XMLNS_ATTRIBUTE_NS_URI);
     
-    final static HashMap<String,SMNamespace> sGlobalNsMap = new HashMap<String, SMNamespace>();
+    protected final static HashMap<String,SMNamespace> sGlobalNsMap = new HashMap<String, SMNamespace>();
     static {
         sGlobalNsMap.put(NS_EMPTY.getURI(), NS_EMPTY);
         sGlobalNsMap.put(NS_XML.getURI(), NS_XML);
@@ -56,27 +56,27 @@ public final class SMOutputContext
 
     // // // We can use canonical values for some types...
 
-    final static SMOTypedValue FALSE_VALUE = SMOTypedValue.create(false);
-    final static SMOTypedValue TRUE_VALUE = SMOTypedValue.create(true);
+    protected final static SMOTypedValue FALSE_VALUE = SMOTypedValue.create(false);
+    protected final static SMOTypedValue TRUE_VALUE = SMOTypedValue.create(true);
 
     /*
-    //////////////////////////////////////////////////////
-    // Configuration settings
-    //////////////////////////////////////////////////////
-    */
+    /**********************************************************
+    /* Configuration settings
+    /**********************************************************
+     */
 
-    final XMLStreamWriter2 _streamWriter;
-    final NamespaceContext _rootNsContext;
-    final boolean _cfgRepairing;
+    protected final XMLStreamWriter2 _streamWriter;
+    protected final NamespaceContext _rootNsContext;
+    protected final boolean _cfgRepairing;
 
     /**
      * Prefix to use for creating automatic namespace prefixes. For example,
      * setting this to "ns" would result in automatic prefixes of form
      * "ns1", "ns2" and so on.
      */
-    String _nsPrefixPrefix = "ns";
+    protected String _nsPrefixPrefix = "ns";
 
-    int _nsPrefixSeqNr = 1;
+    protected int _nsPrefixSeqNr = 1;
 
     /**
      * Configuration flag that specifies whether by default namespaces
@@ -85,27 +85,27 @@ public final class SMOutputContext
      * when elements are output: if false, more complicated logics is used
      * (which considers preferred prefixes, past bindings etc).
      */
-    boolean _cfgPreferDefaultNs = false;
+    protected boolean _cfgPreferDefaultNs = false;
 
     /*
-    //////////////////////////////////////////////////////
-    // State
-    //////////////////////////////////////////////////////
-    */
+    /**********************************************************
+    /* State
+    /**********************************************************
+     */
 
     /**
      * Map that contains all local namespaces, that is, namespaces
      * that have been created for use with documents output using
      * this context.
      */
-    HashMap<String, SMNamespace> _localNsMap = null;
+    protected HashMap<String, SMNamespace> _localNsMap = null;
     
     /**
      * Currently active default namespace; one that is in effect within
      * current scope (inside currently open element, if any; if none,
      * within root level).
      */
-    SMNamespace _defaultNS = NS_EMPTY;
+    protected SMNamespace _defaultNS = NS_EMPTY;
 
     /**
      * Stack of bound non-default namespaces.
@@ -123,10 +123,10 @@ public final class SMOutputContext
     SMNamespace _currElemNS;
 
     /*
-    //////////////////////////////////////////////////////
-    // Indentation settings, state
-    //////////////////////////////////////////////////////
-    */
+    /**********************************************************
+    /* Indentation settings, state
+    /**********************************************************
+     */
 
     /**
      * This String is null when not doing (heuristic) indentation. Otherwise
@@ -171,10 +171,10 @@ public final class SMOutputContext
     boolean _indentLevelEmpty = true;
 
     /*
-    //////////////////////////////////////////////////////
-    // Life-cycle; construction, configuration
-    //////////////////////////////////////////////////////
-    */
+    /**********************************************************
+    /* Life-cycle; construction, configuration
+    /**********************************************************
+     */
 
     protected SMOutputContext(XMLStreamWriter2 sw, NamespaceContext rootNsCtxt)
     {
@@ -216,10 +216,10 @@ public final class SMOutputContext
     }
     
     /*
-    //////////////////////////////////////////////////////
-    // Factory methods, context creation
-    //////////////////////////////////////////////////////
-    */
+    /**********************************************************
+    /* Factory methods, context creation
+    /**********************************************************
+     */
 
     public static SMOutputContext createInstance(XMLStreamWriter2 sw, NamespaceContext rootNsCtxt)
         throws XMLStreamException
@@ -234,13 +234,13 @@ public final class SMOutputContext
     }
 
     /*
-    //////////////////////////////////////////////////////
-    // Factory methods, full document writer creation
-    //
-    // These methods are used when creating full stand-alone
-    // documents using StaxMate
-    //////////////////////////////////////////////////////
-    */
+    /**********************************************************
+    /* Factory methods, full document writer creation
+    /*
+    /* These methods are used when creating full stand-alone
+    /* documents using StaxMate
+    /**********************************************************
+     */
 
     /**
      * Method used to create a StaxMate output fragment that corresponds
@@ -280,15 +280,15 @@ public final class SMOutputContext
     }
     
     /*
-    //////////////////////////////////////////////////////
-    // Factory methods, fragment creation
-    //
-    // These methods are used when only sub-trees are created
-    // using StaxMate (although they can also be used to 
-    // create buffered fragments; but usually that is simpler
-    // to do via fragment object's factory methods)
-    //////////////////////////////////////////////////////
-    */
+    /**********************************************************
+    /* Factory methods, fragment creation
+    /*
+    /* These methods are used when only sub-trees are created
+    /* using StaxMate (although they can also be used to 
+    /* create buffered fragments; but usually that is simpler
+    /* to do via fragment object's factory methods)
+    /**********************************************************
+     */
 
     /**
      * Method to use when outputting an XML sub-tree, in which case the
@@ -310,15 +310,23 @@ public final class SMOutputContext
     }
 
     /*
-    //////////////////////////////////////////////////////
-    // Factory methods, simple node creation
-    //////////////////////////////////////////////////////
-    */
+    /**********************************************************
+    /* Factory methods, simple node creation
+    /**********************************************************
+     */
 
     public SMOutputtable createAttribute(SMNamespace ns, String localName, String value) {
-        return new SMOAttribute(ns, localName, value);
+        return SMOAttribute.attribute(ns, localName, value);
     }
 
+    public SMOutputtable createAttribute(SMNamespace ns, String localName, int value) {
+        return SMOAttribute.attribute(ns, localName, value);
+    }
+
+    public SMOutputtable createAttribute(SMNamespace ns, String localName, byte[] value) {
+        return SMOAttribute.attribute(ns, localName, value);
+    }
+    
     /**
      * Method called by {@link SMOutputElement} to add buffered namespace
      * pre-declaration.
@@ -394,11 +402,19 @@ public final class SMOutputContext
         return SMOTypedValue.create(value);
     }
 
+    public SMOutputtable createValue(byte[] buffer) {
+        return SMOTypedValue.create(buffer, 0, buffer.length);
+    }
+
+    public SMOutputtable createValue(byte[] buffer, int offset, int length) {
+        return SMOTypedValue.create(buffer, offset, length);
+    }
+    
     /*
-    //////////////////////////////////////////////////////
-    // Namespace handling
-    //////////////////////////////////////////////////////
-    */
+    /**********************************************************
+    /* Namespace handling
+    /**********************************************************
+     */
 
     public final SMNamespace getNamespace(String uri)
     {
@@ -450,10 +466,10 @@ public final class SMOutputContext
     }
 
     /*
-    //////////////////////////////////////////////////////
-    // Accessors
-    //////////////////////////////////////////////////////
-    */
+    /**********************************************************
+    /* Accessors
+    /**********************************************************
+     */
 
     public final XMLStreamWriter2 getWriter() {
         return _streamWriter;
@@ -464,11 +480,11 @@ public final class SMOutputContext
     }
 
     /*
-    //////////////////////////////////////////////////////
-    // Outputting of the actual content; done via context
-    // so that overriding is possible
-    //////////////////////////////////////////////////////
-    */
+    /**********************************************************
+    /* Outputting of the actual content; done via context
+    /* so that overriding is possible
+    /**********************************************************
+     */
 
     public void writeCharacters(String text)
         throws XMLStreamException
@@ -543,9 +559,7 @@ public final class SMOutputContext
     public void writeAttribute(SMNamespace ns, String localName, String value)
         throws XMLStreamException
     {
-        /* First things first: in repairing mode this is specifically
-         * easy...
-         */
+        // First things first: in repairing mode this is specifically easy
         if (_cfgRepairing) {
             // If no prefix preference, let's not pass one:
             String prefix = ns.getPreferredPrefix();
@@ -560,14 +574,58 @@ public final class SMOutputContext
 
         // If not repairing, we need to handle bindings:
 
-        /* No/empty namespace is simple for attributes, though; the
-         * default namespace is never used...
-         */
+        // No/empty namespace is simple for attributes, though; the
+        // default namespace is never used...
         if (ns == NS_EMPTY) {
             _streamWriter.writeAttribute(localName, value);
             return;
         }
+        String prefix = _ensureBindingForAttribute(ns);
+        _streamWriter.writeAttribute(prefix, ns.getURI(), localName, value);
+    }
 
+    public void writeAttribute(SMNamespace ns, String localName, int value)
+        throws XMLStreamException
+    {
+        if (_cfgRepairing) {
+            String prefix = ns.getPreferredPrefix();
+            if (prefix == null) {
+                _streamWriter.writeIntAttribute(null, ns.getURI(), localName, value);
+            } else {
+                _streamWriter.writeIntAttribute(prefix, ns.getURI(), localName, value);
+            }
+            return;
+        }
+        if (ns == NS_EMPTY) {
+            _streamWriter.writeIntAttribute(null, null, localName, value);
+            return;
+        }
+        String prefix = _ensureBindingForAttribute(ns);
+        _streamWriter.writeIntAttribute(prefix, ns.getURI(), localName, value);
+    }
+
+    public void writeAttribute(SMNamespace ns, String localName, byte[] value)
+        throws XMLStreamException
+    {
+        if (_cfgRepairing) {
+            String prefix = ns.getPreferredPrefix();
+            if (prefix == null) {
+                _streamWriter.writeBinaryAttribute(null, ns.getURI(), localName, value);
+            } else {
+                _streamWriter.writeBinaryAttribute(prefix, ns.getURI(), localName, value);
+            }
+            return;
+        }
+        if (ns == NS_EMPTY) {
+            _streamWriter.writeBinaryAttribute(null, null, localName, value);
+            return;
+        }
+        String prefix = _ensureBindingForAttribute(ns);
+        _streamWriter.writeBinaryAttribute(prefix, ns.getURI(), localName, value);
+    }
+
+    protected String _ensureBindingForAttribute(SMNamespace ns) throws XMLStreamException
+    {
         String prefix = ns.getBoundPrefix();
         if (prefix == null || prefix.length() == 0) {
             // First check: maybe it is still bound in the root context?
@@ -588,10 +646,9 @@ public final class SMOutputContext
                 bindAndWriteNs(ns, prefix);
             }
         }
-
-        _streamWriter.writeAttribute(prefix, ns.getURI(), localName, value);
+        return prefix;
     }
-
+    
     /**
      * Method called to try to pre-declare given namespace
      */
@@ -816,10 +873,10 @@ public final class SMOutputContext
     }
 
     /*
-    //////////////////////////////////////////////////////
-    // Typed Access API (Stax2 v3+) output methods
-    //////////////////////////////////////////////////////
-    */
+    /**********************************************************
+    /* Typed Access API (Stax2 v3+) output methods
+    /**********************************************************
+     */
 
     public void writeValue(boolean v) throws XMLStreamException {
         _streamWriter.writeBoolean(v);
@@ -837,11 +894,19 @@ public final class SMOutputContext
         _streamWriter.writeDouble(d);
     }
 
+    public void writeValue(byte[] data) throws XMLStreamException {
+        _streamWriter.writeBinary(data, 0, data.length);
+    }
+    
+    public void writeValue(byte[] data, int offset, int length) throws XMLStreamException {
+        _streamWriter.writeBinary(data, offset, length);
+    }
+    
     /*
-    //////////////////////////////////////////////////////
-    // Methods for dealing with buffering and stream state
-    //////////////////////////////////////////////////////
-    */
+    /**********************************************************
+    /* Methods for dealing with buffering and stream state
+    /**********************************************************
+     */
 
     public void flushWriter() throws XMLStreamException
     {
@@ -862,10 +927,10 @@ public final class SMOutputContext
     }
 
     /*
-    //////////////////////////////////////////////////////
-    // Other public utility methods
-    //////////////////////////////////////////////////////
-    */
+    /**********************************************************
+    /* Other public utility methods
+    /**********************************************************
+     */
 
     public String generateUnboundPrefix() {
         while (true) {
@@ -929,10 +994,10 @@ public final class SMOutputContext
     }
 
     /*
-    //////////////////////////////////////////////////////
-    // Package methods
-    //////////////////////////////////////////////////////
-    */
+    /**********************************************************
+    /* Package methods
+    /**********************************************************
+     */
 
     /**
      * @return Number of bound non-default namespaces (ones with explicit
@@ -947,10 +1012,10 @@ public final class SMOutputContext
     }
 
     /*
-    //////////////////////////////////////////////////////
-    // Internal methods
-    //////////////////////////////////////////////////////
-    */
+    /**********************************************************
+    /* Internal methods
+    /**********************************************************
+     */
 
     /**
      * Method for establishing binding between given namespace and

@@ -22,13 +22,13 @@ public abstract class SMOutputContainer
      * Context of this node; defines things like the underlying stream
      * writer and known namespaces.
      */
-    final SMOutputContext _context;
+    protected final SMOutputContext _context;
 
     /**
      * Parent of this container; null for root-level entities, as well
      * as not-yet-linked buffered containers.
      */
-    SMOutputContainer _parent = null;
+    protected SMOutputContainer _parent = null;
 
     /**
      * First child node that has not yet been completely output to the
@@ -37,18 +37,18 @@ public abstract class SMOutputContainer
      * or the child itself being buffered). May be null if no children
      * have been added, or if all have been completely output.
      */
-    SMOutputtable _firstChild = null;
+    protected SMOutputtable _firstChild = null;
 
     /**
      * Last child node that has not been output to the underlying stream.
      */
-    SMOutputtable _lastChild = null;
+    protected SMOutputtable _lastChild = null;
 
     /*
-    ///////////////////////////////////////////////////////////
-    // Life-cycle
-    ///////////////////////////////////////////////////////////
-    */
+    /**********************************************************
+    /* Life-cycle
+    /**********************************************************
+     */
 
     protected SMOutputContainer(SMOutputContext ctxt)
     {
@@ -83,10 +83,10 @@ public abstract class SMOutputContainer
     }
 
     /*
-    ///////////////////////////////////////////////////////////
-    // Simple accessors/mutators
-    ///////////////////////////////////////////////////////////
-    */
+    /**********************************************************
+    /* Simple accessors/mutators
+    /**********************************************************
+     */
 
     /**
      * Method to use for getting parent of this container, which
@@ -110,9 +110,9 @@ public abstract class SMOutputContainer
     }
 
     /*
-    /////////////////////////////////////////////////////
-    // Properties/state
-    /////////////////////////////////////////////////////
+    /**********************************************************
+    /* Properties/state
+    /**********************************************************
      */
 
     /**
@@ -148,11 +148,11 @@ public abstract class SMOutputContainer
     }
 
     /*
-    ///////////////////////////////////////////////////////////
-    // Output methods for simple nodes (no elements, attributes
-    // or buffering)
-    ///////////////////////////////////////////////////////////
-    */
+    /**********************************************************
+    /* Output methods for simple nodes (no elements, attributes
+    /* or buffering)
+    /**********************************************************
+     */
 
     /**
      * Method for adding simple textual content to the xml output
@@ -284,10 +284,10 @@ public abstract class SMOutputContainer
     }
 
     /*
-    ///////////////////////////////////////////////////////////
-    // Typed Access output methods for adding typed
-    // (boolean, int, long) content as character data
-    ///////////////////////////////////////////////////////////
+    /**********************************************************
+    /* Typed Access output methods for adding typed
+    /* (boolean, int, long) content as character data
+    /**********************************************************
     */
 
     /**
@@ -365,12 +365,42 @@ public abstract class SMOutputContainer
         }
     }
 
+    /**
+     * Typed output method for outputting
+     * binary value (encoded using default Base64 encoding variant)
+     * as (textual) xml content.
+     * 
+     * @since 2.2
+     */
+    public <T extends SMOutputContainer> T addValue(byte[] value) throws XMLStreamException {
+        return addValue(value, 0, value.length);
+    }
+
+    /**
+     * Typed output method for outputting
+     * binary value (encoded using default Base64 encoding variant)
+     * as (textual) xml content.
+     * 
+     * @since 2.2
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends SMOutputContainer> T addValue(byte[] value, int offset, int length)
+            throws XMLStreamException
+    {
+        if (_canOutputNewChild()) {
+            _context.writeValue(value, offset, length);
+        } else {
+            _linkNewChild(_context.createValue(value, offset, length));
+        }
+        return (T) this;
+    }
+
     /*
-    ////////////////////////////////////////////////////////
-    // Output methods for Elements, attributes, buffered
-    // fragments
-    ////////////////////////////////////////////////////////
-    */
+    /**********************************************************
+    /* Output methods for Elements, attributes, buffered
+    /* fragments
+    /**********************************************************
+     */
 
     /**
      * Method for adding specified element as a child of this
@@ -471,16 +501,16 @@ public abstract class SMOutputContainer
     }
 
     /*
-    ////////////////////////////////////////////////////////
-    // Buffered fragment/element construction
-    //
-    // note: these methods add tight coupling to sub-classes...
-    // while not really good, architecturally, these are
-    // strongly dependant classes in any case, so let's not
-    // get ulcer over such cyclic dependencies (just duly note
-    // they are there)
-    ////////////////////////////////////////////////////////
-    */
+    /**********************************************************
+    /* Buffered fragment/element construction
+    /*
+    /* note: these methods add tight coupling to sub-classes...
+    /* while not really good, architecturally, these are
+    /* strongly dependant classes in any case, so let's not
+    /* get ulcer over such cyclic dependencies (just duly note
+    /* they are there)
+    /**********************************************************
+     */
 
     /**
      * Method constructing a fragment ("invisible" container
@@ -511,10 +541,10 @@ public abstract class SMOutputContainer
     }
 
     /*
-    ////////////////////////////////////////////////////////
-    // Abstract methods from base classes
-    ////////////////////////////////////////////////////////
-    */
+    /**********************************************************
+    /* Abstract methods from base classes
+    /**********************************************************
+     */
 
     @Override
     protected abstract boolean _output(SMOutputContext ctxt, boolean canClose)
@@ -525,10 +555,10 @@ public abstract class SMOutputContainer
         throws XMLStreamException;
 
     /*
-    ////////////////////////////////////////////////////////
-    // New abstract methods
-    ////////////////////////////////////////////////////////
-    */
+    /**********************************************************
+    /* New abstract methods
+    /**********************************************************
+     */
 
     /**
      * Method called by a child, when it is released and neither is or
@@ -558,10 +588,10 @@ public abstract class SMOutputContainer
         throws XMLStreamException;
 
     /*
-    ////////////////////////////////////////////////////////
-    // Methods for getting more info (debugging, error msgs)
-    ////////////////////////////////////////////////////////
-    */
+    /**********************************************************
+    /* Methods for getting more info (debugging, error msgs)
+    /**********************************************************
+     */
 
     /**
      * Method that can be called to get an XPath like description
@@ -582,10 +612,10 @@ public abstract class SMOutputContainer
     public abstract void getPath(StringBuilder sb);
 
     /*
-    ////////////////////////////////////////////////////////
-    // Internal/package methods, linking
-    ////////////////////////////////////////////////////////
-    */
+    /**********************************************************
+    /* Internal/package methods, linking
+    /**********************************************************
+     */
 
     protected void _linkNewChild(SMOutputtable n)
     {
@@ -658,10 +688,10 @@ public abstract class SMOutputContainer
     }
 
     /*
-    ////////////////////////////////////////////////////////
-    // Internal/package methods
-    ////////////////////////////////////////////////////////
-    */
+    /**********************************************************
+    /* Internal/package methods
+    /**********************************************************
+     */
 
     /**
      * Method called to ensure that the passed-in namespace can be
@@ -693,5 +723,4 @@ public abstract class SMOutputContainer
         throw new IllegalStateException("Illegal call when container (of type "
                                         +getClass()+") was closed");
     }
-
 }

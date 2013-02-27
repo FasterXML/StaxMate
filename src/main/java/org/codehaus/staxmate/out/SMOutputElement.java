@@ -18,10 +18,10 @@ public class SMOutputElement
     protected final static int OUTPUT_CLOSED = 3;
 
     /*
-    /////////////////////////////////////////////
-    // Element properties
-    /////////////////////////////////////////////
-    */
+    /**********************************************************
+    /* Element properties
+    /**********************************************************
+     */
 
     /**
      * Local name of the element, name without preceding prefix or colon
@@ -38,10 +38,10 @@ public class SMOutputElement
     protected final SMNamespace _namespace;
 
     /*
-    /////////////////////////////////////////////
-    // Output state information
-    /////////////////////////////////////////////
-    */
+    /**********************************************************
+    /* Output state information
+    /**********************************************************
+     */
 
     protected int _outputState = OUTPUT_NONE;
 
@@ -70,9 +70,9 @@ public class SMOutputElement
     protected int _parentNsCount;
 
     /*
-    ///////////////////////////////////////////////////////////
-    // Life-cycle
-    ///////////////////////////////////////////////////////////
+    /**********************************************************
+    /* Life-cycle
+    /**********************************************************
      */
 
     protected SMOutputElement(SMOutputContext ctxt,
@@ -97,9 +97,9 @@ public class SMOutputElement
     }
 
     /*
-    ///////////////////////////////////////////////////////////
-    // Simple public accessors
-    ///////////////////////////////////////////////////////////
+    /**********************************************************
+    /* Simple public accessors
+    /**********************************************************
      */
 
     /**
@@ -123,9 +123,9 @@ public class SMOutputElement
     }
 
     /*
-    ///////////////////////////////////////////////////////////
-    // Additional (wrt SMOutputContainer) output methods
-    ///////////////////////////////////////////////////////////
+    /**********************************************************
+    /* Additional (wrt SMOutputContainer) output methods
+    /**********************************************************
      */
 
     /**
@@ -193,6 +193,49 @@ public class SMOutputElement
     }
 
     /**
+     * Typed Access write method to use for adding attribute with
+     * base64-encoded binary value using appropriate default variant
+     * (MIME, no linefeeds)
+     * 
+     * @since 2.0
+     * 
+     * @return This element, to allow call chaining
+     */
+    public SMOutputElement addAttribute(SMNamespace ns, String localName, byte[] value)
+        throws XMLStreamException
+    {
+        ns = _verifyNamespaceArg(ns);
+        
+        // Ok, what can we do, then?
+        switch (_outputState) {
+        case OUTPUT_NONE: // blocked
+            _linkNewChild(_context.createAttribute(ns, localName, value));
+            break;
+        case OUTPUT_ATTRS: // perfect
+            _context.writeAttribute(ns, localName, value);
+            break;
+        default:
+            _throwClosedForAttrs();
+        } 
+        return this;
+    }
+
+    /**
+     * Typed Access write method to use for adding attribute with
+     * base64-encoded binary value using appropriate default variant
+     * (MIME, no linefeeds)
+     * 
+     * @since 2.0
+     * 
+     * @return This element, to allow call chaining
+     */
+    public SMOutputElement addAttribute(String localName, byte[] value)
+        throws XMLStreamException
+    {
+        return addAttribute(null, localName, value);
+    }
+
+    /**
      * Method that can be (but never has to) called to force declaration
      * of given namespace for this element, if that is possible (i.e.
      * no binding has been added for the preferred prefix of given
@@ -239,9 +282,9 @@ public class SMOutputElement
     }
 
     /*
-    ///////////////////////////////////////////////////////////
-    // Abstract method implementations
-    ///////////////////////////////////////////////////////////
+    /**********************************************************
+    /* Abstract method implementations
+    /**********************************************************
      */
 
     @Override
@@ -379,9 +422,9 @@ public class SMOutputElement
     }
 
     /*
-    ///////////////////////////////////////////////////////////
-    // Internal methods
-    ///////////////////////////////////////////////////////////
+    /**********************************************************
+    /* Internal methods
+    /**********************************************************
      */
 
     protected void doWriteStartElement()
