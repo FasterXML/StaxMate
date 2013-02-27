@@ -1354,7 +1354,7 @@ public abstract class SMInputCursor
          *   Not sure if END_ELEMENT is the best choice, but seems to work ok.
          */
         String str = _streamReader.getElementText();
-        _currEvent = SMEvent.END_ELEMENT;
+        _markConsumed();
         return str;
     }
 
@@ -1378,7 +1378,7 @@ public abstract class SMInputCursor
     {
         _verifyElemAccess("getElemBooleanValue");
         // need to change curr event (see comments for getElemStringValue)
-        _currEvent = SMEvent.END_ELEMENT;
+        _markConsumed();
         return _streamReader.getElementAsBoolean();
     }
 
@@ -1390,7 +1390,7 @@ public abstract class SMInputCursor
         throws XMLStreamException
     {
         _verifyElemAccess("getElemBooleanValue");
-        _currEvent = SMEvent.END_ELEMENT;
+        _markConsumed();
         // not optimal, but should work:
         try {
             return _streamReader.getElementAsBoolean();
@@ -1419,7 +1419,7 @@ public abstract class SMInputCursor
         throws XMLStreamException
     {
         _verifyElemAccess("getElemIntValue");
-        _currEvent = SMEvent.END_ELEMENT;
+        _markConsumed();
         return _streamReader.getElementAsInt();
     }
 
@@ -1431,7 +1431,7 @@ public abstract class SMInputCursor
         throws XMLStreamException
     {
         _verifyElemAccess("getElemIntValue");
-        _currEvent = SMEvent.END_ELEMENT;
+        _markConsumed();
         try {
             return _streamReader.getElementAsInt();
         } catch (TypedXMLStreamException tse) {
@@ -1459,7 +1459,7 @@ public abstract class SMInputCursor
         throws XMLStreamException
     {
         _verifyElemAccess("getElemLongValue");
-        _currEvent = SMEvent.END_ELEMENT;
+        _markConsumed();
         return _streamReader.getElementAsLong();
     }
 
@@ -1471,7 +1471,7 @@ public abstract class SMInputCursor
         throws XMLStreamException
     {
         _verifyElemAccess("getElemLongValue");
-        _currEvent = SMEvent.END_ELEMENT;
+        _markConsumed();
         try {
             return _streamReader.getElementAsLong();
         } catch (TypedXMLStreamException tse) {
@@ -1499,7 +1499,7 @@ public abstract class SMInputCursor
         throws XMLStreamException
     {
         _verifyElemAccess("getElemDoubleValue");
-        _currEvent = SMEvent.END_ELEMENT;
+        _markConsumed();
         return _streamReader.getElementAsDouble();
     }
 
@@ -1511,7 +1511,7 @@ public abstract class SMInputCursor
         throws XMLStreamException
     {
         _verifyElemAccess("getElemDoubleValue");
-        _currEvent = SMEvent.END_ELEMENT;
+        _markConsumed();
         try {
             return _streamReader.getElementAsDouble();
         } catch (TypedXMLStreamException tse) {
@@ -1541,7 +1541,7 @@ public abstract class SMInputCursor
         throws XMLStreamException
     {
         _verifyElemAccess("getElemEnumValue");
-        _currEvent = SMEvent.END_ELEMENT;
+        _markConsumed();
         String value = _streamReader.getElementText().trim();
         if (value.length() == 0) {
             return null;
@@ -1562,7 +1562,7 @@ public abstract class SMInputCursor
     public byte[] getElemBinaryValue(Base64Variant variant) throws XMLStreamException
     {
         _verifyElemAccess("getElemDoubleValue");
-        _currEvent = SMEvent.END_ELEMENT;
+        _markConsumed();
         return _streamReader.getElementAsBinary();
     }
     
@@ -1993,7 +1993,7 @@ public abstract class SMInputCursor
      * valid)
      */
     @Override
-        public String toString() {
+    public String toString() {
         return "[Cursor that point(s/ed) to: "+getCurrEventDesc()+"]";
     }
 
@@ -2049,4 +2049,22 @@ public abstract class SMInputCursor
      */
     protected abstract SMInputCursor constructDescendantCursor(SMFilter f)
         throws XMLStreamException;
+
+    /*
+    /**********************************************************************
+    /* Helper methods for sub-classes, related objects
+    /**********************************************************************
+     */
+    
+    /**
+     * Method to call to notify that textual contents of this cursor have been
+     * read; typically when a call has been made that will traverse contents
+     * and make stream point to matching <code>END_ELEMENT</code>.
+     * 
+     * @since 2.2
+     */
+    protected void _markConsumed()
+    {
+        _currEvent = SMEvent.END_ELEMENT;
+    }
 }

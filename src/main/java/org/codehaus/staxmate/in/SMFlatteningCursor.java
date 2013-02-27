@@ -24,11 +24,10 @@ import javax.xml.stream.XMLStreamException;
 public class SMFlatteningCursor
     extends SMInputCursor
 {
-
     /*
-    ////////////////////////////////////////////
-    // Life cycle, configuration
-    ////////////////////////////////////////////
+    /**********************************************************************
+    /* Life cycle, configuration
+    /**********************************************************************
      */
 
     public SMFlatteningCursor(SMInputContext ctxt,SMInputCursor parent, SMFilter f)
@@ -37,9 +36,9 @@ public class SMFlatteningCursor
     }
 
     /*
-    ///////////////////////////////////////////////////
-    // Public API, accessing cursor state information
-    ///////////////////////////////////////////////////
+    /**********************************************************************
+    /* Public API, accessing cursor state information
+    /**********************************************************************
      */
 
     public int getParentCount()
@@ -71,9 +70,9 @@ public class SMFlatteningCursor
     }
 
     /*
-    ////////////////////////////////////////////
-    // Public API, iterating
-    ////////////////////////////////////////////
+    /**********************************************************************
+    /* Public API, iterating
+    /**********************************************************************
      */
 
     public SMEvent getNext()
