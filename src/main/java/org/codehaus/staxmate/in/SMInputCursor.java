@@ -12,6 +12,8 @@ import javax.xml.stream.events.XMLEvent;
 
 import org.codehaus.stax2.DTDInfo;
 import org.codehaus.stax2.XMLStreamReader2;
+import org.codehaus.stax2.typed.Base64Variant;
+import org.codehaus.stax2.typed.Base64Variants;
 import org.codehaus.stax2.typed.TypedXMLStreamException;
 
 /**
@@ -1258,6 +1260,31 @@ public abstract class SMInputCursor
         }
     }
 
+    /**
+     * Method for accessing value of a base64-encoded attribute, using
+     * specified base64 encoding variant.
+     * 
+     * @since 2.2
+     */
+    public byte[] getAttrBinaryValue(int index, Base64Variant variant)
+        throws  XMLStreamException
+    {
+        if (!readerAccessible()) {
+            throw _notAccessible("getAttrLongValue");
+        }
+        return _streamReader.getAttributeAsBinary(index, variant);
+    }
+
+    /**
+     * Method for accessing value of a base64-encoded attribute, using
+     * default base64 encoding variant (as per {@link Base64Variants#getDefaultVariant()}.
+     * 
+     * @since 2.2
+     */
+    public byte[] getAttrBinaryValue(int index) throws  XMLStreamException {
+        return getAttrBinaryValue(index, Base64Variants.getDefaultVariant());
+    }
+    
     /*
     /**********************************************************************
     /* Deprecated data access
@@ -1526,6 +1553,29 @@ public abstract class SMInputCursor
         }
     }
 
+    /**
+     * Method for accessing value current element, which isbase64-encoded
+     * binary data, by decoding contents using specified variant.
+     * 
+     * @since 2.2
+     */
+    public byte[] getElemBinaryValue(Base64Variant variant) throws XMLStreamException
+    {
+        _verifyElemAccess("getElemDoubleValue");
+        _currEvent = SMEvent.END_ELEMENT;
+        return _streamReader.getElementAsBinary();
+    }
+    
+    /**
+     * Method for accessing value current element, which isbase64-encoded
+     * binary data, by decoding contents using the default base64 variant
+     * 
+     * @since 2.2
+     */
+    public byte[] getElemBinaryValue() throws XMLStreamException {
+        return getElemBinaryValue(Base64Variants.getDefaultVariant());
+    }    
+    
     /**
      * Helper method called by getElemXxxValue methods to ensure that
      * the state is appropriate for the call

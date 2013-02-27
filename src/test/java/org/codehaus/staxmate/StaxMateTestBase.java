@@ -10,6 +10,8 @@ import org.codehaus.staxmate.in.*;
 public abstract class StaxMateTestBase
     extends junit.framework.TestCase
 {
+    protected static XMLInputFactory _staxInputFactory = XMLInputFactory.newInstance();
+    
     protected SMInputFactory _inputFactory;
 
     /*
@@ -27,7 +29,7 @@ public abstract class StaxMateTestBase
     }
 
     protected XMLInputFactory getStaxInputFactory() {
-        return XMLInputFactory.newInstance();
+        return _staxInputFactory;
     }
     
     protected XMLStreamReader getCoalescingReader(String content)
@@ -46,9 +48,9 @@ public abstract class StaxMateTestBase
     }
 
     /*
-    ////////////////////////////////////////////////////////
-    // Assertion support
-    ////////////////////////////////////////////////////////
+    /**********************************************************************
+    /* Assertion support
+    /**********************************************************************
      */
 
     protected void assertTokenType(int expType, int actType)
