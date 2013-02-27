@@ -1,28 +1,18 @@
-Version: 2.0.3
-
-Release date:
-  02-Oct-2012
-
-Description:
-  Another patch release for 2.0.0
-
-Problems fixed:
-
-* [STAXMATE-41] NPE with DOM elements/attributes when document built in non-NS mode
-  (reported by Prokopis P)
-
-Other:
-
-* Now specifies dependency as Woodstox 4.1; although may still work on 4.0.x
- (just not tested or officially supported)
+Project: StaxMate
+Version: 2.1.1 (xx-Feb-2103)
 
 ------------------------------------------------------------------------
 == History: ==
 ------------------------------------------------------------------------
 
-2.0.2: not released 
+2.1.0 (06-Oct-2012)
 
-2.0.1: [20-Nov-2010]
+* [STAXMATE-41] NPE with DOM elements/attributes when document built in non-NS mode
+  (reported by Prokopis P)
+* Now specifies dependency as Woodstox 4.1; although may still work on 4.0.x
+ (just not tested or officially supported)
+
+2.0.1 [20-Nov-2010]
 
 NOTE: requires new version of stax2-api, 3.0.4 (at least for STAXMATE-37)
 
