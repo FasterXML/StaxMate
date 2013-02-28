@@ -1,5 +1,5 @@
 Project: StaxMate
-Version: 2.2.0 (xx-Feb-2103)
+Version: 2.2.0 (28-Feb-2103)
 
 #1: Expose access to binary data, SMInputCursor.getAttrBinaryValue(),
    getElemBinaryValue()
