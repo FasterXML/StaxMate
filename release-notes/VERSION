@@ -1,14 +1,22 @@
 Project: StaxMate
-Version: 2.2.0 (28-Feb-2103)
+Version: 2.2.1 (xx-xxx-2013)
+
+Changes:
+
+#6: Change stax-api dependency to use standard Maven artifact, scope
+  "provided" (since JDK 1.6 has it already; and Stax impl must import too)
+
+------------------------------------------------------------------------
+== History: ==
+------------------------------------------------------------------------
+
+2.2.0 (28-Feb-2013)
 
 #1: Expose access to binary data, SMInputCursor.getAttrBinaryValue(),
    getElemBinaryValue()
 #3: Allow writing binary data using SMOutputContainer.addValue(byte[]),
    SMOutputElement.addAttribute(String, byte[])
 
-------------------------------------------------------------------------
-== History: ==
-------------------------------------------------------------------------
 
 2.1.0 (06-Oct-2012)
 
