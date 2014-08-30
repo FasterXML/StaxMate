@@ -1,10 +1,11 @@
 Project: StaxMate
-Version: 2.2.1 (xx-xxx-2013)
+Version: 2.2.1 (30-Aug-2013)
 
 Changes:
 
 #6: Change stax-api dependency to use standard Maven artifact, scope
   "provided" (since JDK 1.6 has it already; and Stax impl must import too)
+#7: Add License (BSD 2) file under 'src/main/resource/META-INF', also included in jar.
 
 ------------------------------------------------------------------------
 == History: ==
@@ -16,7 +17,7 @@ Changes:
    getElemBinaryValue()
 #3: Allow writing binary data using SMOutputContainer.addValue(byte[]),
    SMOutputElement.addAttribute(String, byte[])
-
+- Move project to Github, as https://github.com/FasterXML/StaxMate/
 
 2.1.0 (06-Oct-2012)
 
