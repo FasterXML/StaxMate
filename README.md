@@ -7,6 +7,10 @@ As with Stax API, input and output sides are separate, and distinction may be ev
 However, whereas Stax API has division between "raw" cursor API, and more object-oriented Event API, StaxMate presents only a single level of abstraction, on input and output sides.
 StaxMate reader-side abstractions are mostly based on Cursor API, but some support for Event API is also planned for interoperability purposes.
 
+## Status
+
+[![Build Status](https://travis-ci.org/FasterXML/StaxMate.svg)](https://travis-ci.org/FasterXML/StaxMate)
+
 # Stax implementations supported
 
 StaxMate aims to be implementation dependant, so in theory any compliant Stax implementation should be usable.
