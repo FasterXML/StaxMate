@@ -27,7 +27,7 @@ There are also some known issue with SJSXP: specifically, it tends to write unne
 
 # Licensing
 
-StaxMate is licensed under [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+StaxMate is licensed under [BSD 2](LICENSE.txt)
 
 # Documentation, downloads
 
