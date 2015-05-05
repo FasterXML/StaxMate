@@ -1,15 +1,19 @@
 Project: StaxMate
-Version: 2.2.1 (30-Aug-2013)
 
-Changes:
+------------------------------------------------------------------------
+== Releases ==
+------------------------------------------------------------------------
+
+2.3.0 (04-May-2015)
+
+#9: Dependency on org.codehaus.woodstox:stax2-api:3.1.1 causes failures
+- Update Woodstox dependency to 4.4.
+
+2.2.1 (30-Aug-2013)
 
 #6: Change stax-api dependency to use standard Maven artifact, scope
   "provided" (since JDK 1.6 has it already; and Stax impl must import too)
 #7: Add License (BSD 2) file under 'src/main/resource/META-INF', also included in jar.
-
-------------------------------------------------------------------------
-== History: ==
-------------------------------------------------------------------------
 
 2.2.0 (28-Feb-2013)
 
