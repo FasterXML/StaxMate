@@ -33,9 +33,22 @@ StaxMate is licensed under [BSD 2](LICENSE.txt)
 
 Check [project Wiki](../../wiki).
 
+# Maven coordinates
+
+Newer versions (2.1.x and above) of StaxMate use following Maven coordinates:
+
+```xml
+<dependency>
+  <groupId>com.fasterxml.staxmate</groupId>
+  <artifactId>staxmate</artifactId>
+<dependency>
+```
+
+Older versions (1.1 through 2.0) instead use group id of `org.codehaus.staxmate`.
+
 # Authors
 
-Author of StaxMate is Tatu Saloranta, tatu.saloranta@iki.fi
+Author of StaxMate is Tatu "cowtowncoder" Saloranta, tatu.saloranta@iki.fi
 
 Other people who have participated in development (usually by submitting bug reports and patches) are listed in 'CREDITS' file.
 They are considered co-authors of StaxMate, and are integral to the quality of the codebase.
