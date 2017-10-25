@@ -4,13 +4,10 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.sonatype.oss</groupId>
+    <groupId>com.fasterxml</groupId>
     <artifactId>oss-parent</artifactId>
-    <version>7</version>
+    <version>30</version>
   </parent>
-  <prerequisites>
-    <maven>2.2.1</maven>
-  </prerequisites>
   <groupId>com.fasterxml.staxmate</groupId>
   <artifactId>staxmate</artifactId>
   <packaging>bundle</packaging>
@@ -82,9 +79,9 @@ It builds on top of a Stax (JSR-173) compliant XML processors such as Woodstox o
 
     <!-- Ditto for Woodstox -->
     <dependency>
-      <groupId>org.codehaus.woodstox</groupId>
-      <artifactId>woodstox-core-asl</artifactId>
-      <version>4.4.1</version>
+      <groupId>com.fasterxml.woodstox</groupId>
+      <artifactId>woodstox-core</artifactId>
+      <version>5.0.3</version>
       <scope>test</scope>
     </dependency>
 
