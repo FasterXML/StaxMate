@@ -111,7 +111,7 @@ public class DOMConverter
         try{
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             dbf.setNamespaceAware(true);
-            db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            db = dbf.newDocumentBuilder();
         } catch (ParserConfigurationException pce) {
             throw new XMLStreamException(pce);
         }
