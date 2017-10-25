@@ -4,7 +4,6 @@ Here are people who have contributed to StaxMate development:
 Tatu Saloranta, tatu.saloranta@iki.fi: Author
 
 David S Boyer:
-
   * Reported problems with hierarchic cursor traversal and contributed
     patches to fix them, as well as matching unit tests to point out the
     problem and verify solution
@@ -32,3 +31,7 @@ Rohan Hant:
 Prokopis Prokopidis:
   * Reported [STAXMATE-41]: NPE when outputting non-NS attributes via DOM writer
   [2.0.2]
+
+Francisco Bento (chicobento@github)
+  * Reported #10: Update DOMConverter.java to use namespace awareness
+   [2.3.1]

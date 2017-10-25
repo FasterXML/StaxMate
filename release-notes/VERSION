@@ -4,6 +4,11 @@ Project: StaxMate
 == Releases ==
 ------------------------------------------------------------------------
 
+2.3.1 (not yet released)
+
+#10: Update DOMConverter.java to use namespace awareness
+ (contributed by chicobento@github)
+
 2.3.0 (04-May-2015)
 
 #9: Dependency on org.codehaus.woodstox:stax2-api:3.1.1 causes failures
