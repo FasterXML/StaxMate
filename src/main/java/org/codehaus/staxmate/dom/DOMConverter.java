@@ -107,10 +107,30 @@ public class DOMConverter
         throws XMLStreamException
     {
         // Let's enable namespace awareness by default
+        return buildDocument(r, true);
+    }
+
+    /**
+     * This method will create a {@link org.w3c.dom.Document} instance using
+     * the default JAXP DOM document construction mechanism and
+     * populated using the given StAX stream reader.
+     *<p>
+     * Note: underlying stream reader will not be closed by calling this
+     * method.
+     *
+     * @param r Stream reader from which input is read.
+     * @param namespaceAware Is namespace-awareness enabled.
+     * @return <code>Document</code> - DOM document object.
+     * @throws XMLStreamException If the reader threw such exception (to
+     *   indicate a parsing or I/O problem)
+     */
+    public Document buildDocument(XMLStreamReader r, boolean namespaceAware)
+        throws XMLStreamException
+    {
         DocumentBuilder db;
         try{
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            dbf.setNamespaceAware(true);
+            dbf.setNamespaceAware(namespaceAware);
             db = dbf.newDocumentBuilder();
         } catch (ParserConfigurationException pce) {
             throw new XMLStreamException(pce);
@@ -571,4 +591,3 @@ public class DOMConverter
         }
     }
 }
-
