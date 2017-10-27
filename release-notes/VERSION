@@ -4,7 +4,7 @@ Project: StaxMate
 == Releases ==
 ------------------------------------------------------------------------
 
-2.3.1 (not yet released)
+2.3.1 (26-Oct-2017)
 
 #10: Update DOMConverter.java to use namespace awareness
  (contributed by chicobento@github)
