@@ -264,14 +264,14 @@ public abstract class SMInputCursor
      * For example, here are expected return values
      * for an example XML document:
      *<pre>
-     *  &lt;!-- Comment outside tree --> [0]
-     *  &lt;root> [0]
+     *  &lt;!-- Comment outside tree --&gt; [0]
+     *  &lt;root&gt; [0]
      *    Text [1]
-     *    &lt;branch> [1]
+     *    &lt;branch&gt; [1]
      *      Inner text [2]
-     *      &lt;child /> [2]/[2]
-     *    &lt;/branch> [1]
-     *  &lt;/root> [0]
+     *      &lt;child /&gt; [2]/[2]
+     *    &lt;/branch&gt; [1]
+     *  &lt;/root&gt; [0]
      *</pre>
      * Numbers in bracket are depths that would be returned when the
      * cursor points to the node.
