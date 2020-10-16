@@ -4,7 +4,7 @@ Project: StaxMate
 == Releases ==
 ------------------------------------------------------------------------
 
-2.4.0 (13-Oct-2020)
+2.4.0 (16-Oct-2020)
 
 - Update baseline JDK dependency to Java 6
 - Dependency updates: Woodstox 6.x, stax2-api 4.x
