@@ -94,6 +94,7 @@ It builds on top of a Stax (JSR-173) compliant XML processors such as Woodstox o
         <plugin><!-- plug-in to attach source bundle in repo -->
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
+	  <version>${version.plugin.source}</version>
           <executions>
             <execution>
               <id>attach-sources</id>
