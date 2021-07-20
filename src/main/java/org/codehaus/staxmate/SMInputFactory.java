@@ -171,7 +171,8 @@ public final class SMInputFactory
         try {
             @SuppressWarnings("deprecation")
             String sysId = f.toURL().toExternalForm();
-            XMLStreamReader sr = _staxFactory.createXMLStreamReader(sysId, new FileInputStream(f));
+            XMLStreamReader sr = _staxFactory.createXMLStreamReader(sysId,
+                    new FileInputStream(f)); // lgtm [java/input-resource-leak]
             return wrapIfNecessary(sr);
         } catch (IOException ioe) {
             throw new XMLStreamException(ioe);

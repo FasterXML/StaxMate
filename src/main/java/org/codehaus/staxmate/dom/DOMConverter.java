@@ -206,12 +206,11 @@ public class DOMConverter
                 break main_loop;
 
             case XMLStreamConstants.END_ELEMENT:
-                current = current.getParentNode();
+                current = current.getParentNode(); // lgtm [java/dereferenced-value-may-be-null]
                 if (current == null || current == doc) {
-                    /* 19-Nov-2010, tatu: If the root element closed, we now need
-                     *    to bail out UNLESS we are building "whole document"
-                     *    (in which case still need to get possible PIs, comments)
-                     */
+                    // 19-Nov-2010, tatu: If the root element closed, we now need
+                    //    to bail out UNLESS we are building "whole document"
+                    //    (in which case still need to get possible PIs, comments)
                     if (!wholeDoc) {
                         break main_loop;
                     }
@@ -220,10 +219,9 @@ public class DOMConverter
 
             case XMLStreamConstants.ENTITY_DECLARATION:
             case XMLStreamConstants.NOTATION_DECLARATION:
-                /* Shouldn't really get these, but maybe some stream readers
-                 * do provide the info. If so, better ignore it -- DTD event
-                 * should have most/all we need.
-                 */
+                // Shouldn't really get these, but maybe some stream readers
+                // do provide the info. If so, better ignore it -- DTD event
+                // should have most/all we need.
                 continue main_loop;
 
             case XMLStreamConstants.ENTITY_REFERENCE:
@@ -247,9 +245,7 @@ public class DOMConverter
                         newElem = doc.createElement(ln);
                     }
 
-                    /* Silly old DOM: must mix in namespace declarations
-                     * in there...
-                     */
+                    // Silly old DOM: must mix in namespace declarations in there...
                     for (int i = 0, len = sr.getNamespaceCount(); i < len; ++i) {
                         String prefix = sr.getNamespacePrefix(i);
                         String qname;
@@ -275,7 +271,7 @@ public class DOMConverter
                         }
                     }
                     // And then 'push' new element...
-                    current.appendChild(newElem);
+                    current.appendChild(newElem); // lgtm [java/dereferenced-value-may-be-null]
                     current = newElem;
                     continue main_loop;
                 }
@@ -313,7 +309,7 @@ public class DOMConverter
             }
 
             if (child != null) {
-                current.appendChild(child);
+                current.appendChild(child); // lgtm [java/dereferenced-value-may-be-null]
             }
         }
     }
