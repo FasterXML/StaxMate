@@ -14,6 +14,7 @@ import org.codehaus.stax2.XMLStreamWriter2;
 import org.codehaus.stax2.ri.Stax2ReaderAdapter;
 import org.codehaus.stax2.ri.Stax2WriterAdapter;
 
+import java.util.HashMap;
 import java.util.regex.Pattern;
 import javax.xml.namespace.NamespaceContext;
 
@@ -39,15 +40,15 @@ public class DOMConverter
      */
     protected boolean _inputCfgIgnoreWs = false;
 
-	private SimpleNamespaceContext simpleNamespaceContext;
-	private java.util.Map<Node,Node> attributeElementMap;
-	private java.util.Map<Node, Tupel<java.lang.Integer,java.lang.Integer> > nodeLocationMap;
+    private SimpleNamespaceContext simpleNamespaceContext;
+    private java.util.Map<Node,Node> attributeElementMap;
+    private java.util.Map<Node, Tupel<java.lang.Integer,java.lang.Integer> > nodeLocationMap;
 
-	/**
-	 * Map for holding thw mapping between URIs and prefixes 
-	 * for resolving namespaces
-	 */
-	private java.util.Map<java.lang.String, java.lang.String> nsmap;
+    /**
+     * Map for holding thw mapping between URIs and prefixes 
+     * for resolving namespaces
+     */
+    private java.util.Map<java.lang.String, java.lang.String> nsmap;
 
     /*
     /**********************************************************************
@@ -180,40 +181,40 @@ public class DOMConverter
          */
         boolean wholeDoc = (r.getEventType() == XMLStreamConstants.START_DOCUMENT);
 
-		nsmap=new java.util.HashMap();
+        nsmap=new java.util.HashMap();
 
         XMLStreamReader2 sr = Stax2ReaderAdapter.wrapIfNecessary(r);
         QNameRecycler recycler = new QNameRecycler();
         boolean nsAware = _isNamespaceAware(sr);
         Node current = doc; // At top level
-		int position=0;
-		nodeLocationMap=new java.util.HashMap();
-		attributeElementMap=new java.util.HashMap();
+        int position=0;
+        nodeLocationMap=new HashMap();
+        attributeElementMap=new HashMap();
 
-		Node justClosed=null;
+        Node justClosed=null;
     main_loop:
         for (int evtType = sr.getEventType(); true; evtType = sr.next()) {
             Node child;
 
             switch (evtType) {
             case XMLStreamConstants.CDATA:
-				if(justClosed!=null)
-				{
-					nodeLocationMap.put(justClosed,new Tupel(nodeLocationMap.get(justClosed).getLefty(),sr.getLocation().getCharacterOffset()));
-					justClosed=null;
-				}
+                if(justClosed!=null)
+                {
+                    nodeLocationMap.put(justClosed,new Tupel(nodeLocationMap.get(justClosed).getLefty(),sr.getLocation().getCharacterOffset()));
+                    justClosed=null;
+                }
                 child = doc.createCDATASection(sr.getText());
-				nodeLocationMap.put(child,new Tupel(sr.getLocation().getCharacterOffset(),sr.getLocation().getCharacterOffset()));
-				position=sr.getLocation().getCharacterOffset();
-				justClosed=child;
+                nodeLocationMap.put(child,new Tupel(sr.getLocation().getCharacterOffset(),sr.getLocation().getCharacterOffset()));
+                position=sr.getLocation().getCharacterOffset();
+                justClosed=child;
                 break;
 
             case XMLStreamConstants.SPACE:
-				if(justClosed!=null)
-				{
-					nodeLocationMap.put(justClosed,new Tupel(nodeLocationMap.get(justClosed).getLefty(),sr.getLocation().getCharacterOffset()));
-					justClosed=null;
-				}
+                if(justClosed!=null)
+                {
+                    nodeLocationMap.put(justClosed,new Tupel(nodeLocationMap.get(justClosed).getLefty(),sr.getLocation().getCharacterOffset()));
+                    justClosed=null;
+                }
                 if (_inputCfgIgnoreWs) {
                     continue main_loop;
                 }
@@ -227,45 +228,45 @@ public class DOMConverter
                 // fall through
 
             case XMLStreamConstants.CHARACTERS:
-				if(justClosed!=null)
-				{
-					nodeLocationMap.put(justClosed,new Tupel(nodeLocationMap.get(justClosed).getLefty(),sr.getLocation().getCharacterOffset()));
-					justClosed=null;
-				}
+                if(justClosed!=null)
+                {
+                    nodeLocationMap.put(justClosed,new Tupel(nodeLocationMap.get(justClosed).getLefty(),sr.getLocation().getCharacterOffset()));
+                    justClosed=null;
+                }
                 child = doc.createTextNode(sr.getText());
-				nodeLocationMap.put(child,new Tupel(sr.getLocation().getCharacterOffset(),sr.getLocation().getCharacterOffset()));
-				position=sr.getLocation().getCharacterOffset();
-				justClosed=child;
+                nodeLocationMap.put(child,new Tupel(sr.getLocation().getCharacterOffset(),sr.getLocation().getCharacterOffset()));
+                position=sr.getLocation().getCharacterOffset();
+                justClosed=child;
                 break;
 
             case XMLStreamConstants.COMMENT:
-				if(justClosed!=null)
-				{
-					nodeLocationMap.put(justClosed,new Tupel(nodeLocationMap.get(justClosed).getLefty(),sr.getLocation().getCharacterOffset()));
-					justClosed=null;
-				}
+                if(justClosed!=null)
+                {
+                    nodeLocationMap.put(justClosed,new Tupel(nodeLocationMap.get(justClosed).getLefty(),sr.getLocation().getCharacterOffset()));
+                    justClosed=null;
+                }
                 child = doc.createComment(sr.getText());
-				nodeLocationMap.put(child,new Tupel(sr.getLocation().getCharacterOffset(),sr.getLocation().getCharacterOffset()));
-				position=sr.getLocation().getCharacterOffset();
-				justClosed=child;
+                nodeLocationMap.put(child,new Tupel(sr.getLocation().getCharacterOffset(),sr.getLocation().getCharacterOffset()));
+                position=sr.getLocation().getCharacterOffset();
+                justClosed=child;
                 break;
 
             case XMLStreamConstants.END_DOCUMENT:
-				if(justClosed!=null)
-				{
-					nodeLocationMap.put(justClosed,new Tupel(nodeLocationMap.get(justClosed).getLefty(),sr.getLocation().getCharacterOffset()));
-					justClosed=null;
-				}
+                if(justClosed!=null)
+                {
+                    nodeLocationMap.put(justClosed,new Tupel(nodeLocationMap.get(justClosed).getLefty(),sr.getLocation().getCharacterOffset()));
+                    justClosed=null;
+                }
                 break main_loop;
 
             case XMLStreamConstants.END_ELEMENT:
-				if(justClosed!=null)
-				{
-					nodeLocationMap.put(justClosed,new Tupel(nodeLocationMap.get(justClosed).getLefty(),sr.getLocation().getCharacterOffset()));
-					justClosed=null;
-				}
-				justClosed=current;
-				position=sr.getLocation().getCharacterOffset();
+                if(justClosed!=null)
+                {
+                    nodeLocationMap.put(justClosed,new Tupel(nodeLocationMap.get(justClosed).getLefty(),sr.getLocation().getCharacterOffset()));
+                    justClosed=null;
+                }
+                justClosed=current;
+                position=sr.getLocation().getCharacterOffset();
                 current = current.getParentNode(); // lgtm [java/dereferenced-value-may-be-null]
                 if (current == null || current == doc) {
                     // 19-Nov-2010, tatu: If the root element closed, we now need
@@ -279,55 +280,55 @@ public class DOMConverter
 
             case XMLStreamConstants.ENTITY_DECLARATION:
             case XMLStreamConstants.NOTATION_DECLARATION:
-				if(justClosed!=null)
-				{
-					nodeLocationMap.put(justClosed,new Tupel(nodeLocationMap.get(justClosed).getLefty(),sr.getLocation().getCharacterOffset()));
-					justClosed=null;
-				}
+                if(justClosed!=null)
+                {
+                    nodeLocationMap.put(justClosed,new Tupel(nodeLocationMap.get(justClosed).getLefty(),sr.getLocation().getCharacterOffset()));
+                    justClosed=null;
+                }
                 // Shouldn't really get these, but maybe some stream readers
                 // do provide the info. If so, better ignore it -- DTD event
                 // should have most/all we need.
                 continue main_loop;
 
             case XMLStreamConstants.ENTITY_REFERENCE:
-				if(justClosed!=null)
-				{
-					nodeLocationMap.put(justClosed,new Tupel(nodeLocationMap.get(justClosed).getLefty(),sr.getLocation().getCharacterOffset()));
-					justClosed=null;
-				}
+                if(justClosed!=null)
+                {
+                    nodeLocationMap.put(justClosed,new Tupel(nodeLocationMap.get(justClosed).getLefty(),sr.getLocation().getCharacterOffset()));
+                    justClosed=null;
+                }
                 child = doc.createEntityReference(sr.getLocalName());
-				nodeLocationMap.put(child,new Tupel(position,sr.getLocation().getCharacterOffset()));
-				position=sr.getLocation().getCharacterOffset();
+                nodeLocationMap.put(child,new Tupel(position,sr.getLocation().getCharacterOffset()));
+                position=sr.getLocation().getCharacterOffset();
                 break;
 
             case XMLStreamConstants.PROCESSING_INSTRUCTION:
-				if(justClosed!=null)
-				{
-					nodeLocationMap.put(justClosed,new Tupel(nodeLocationMap.get(justClosed).getLefty(),sr.getLocation().getCharacterOffset()));
-					justClosed=null;
-				}
+                if(justClosed!=null)
+                {
+                    nodeLocationMap.put(justClosed,new Tupel(nodeLocationMap.get(justClosed).getLefty(),sr.getLocation().getCharacterOffset()));
+                    justClosed=null;
+                }
                 child = doc.createProcessingInstruction(sr.getPITarget(), sr.getPIData());
-				nodeLocationMap.put(child,new Tupel(sr.getLocation().getCharacterOffset(),sr.getLocation().getCharacterOffset()));
-				position=sr.getLocation().getCharacterOffset();
-				justClosed=child;
+                nodeLocationMap.put(child,new Tupel(sr.getLocation().getCharacterOffset(),sr.getLocation().getCharacterOffset()));
+                position=sr.getLocation().getCharacterOffset();
+                justClosed=child;
                 break;
 
             case XMLStreamConstants.START_ELEMENT:
                 // Ok, need to add a new element...
                 {
-					if(justClosed!=null)
-					{
-						nodeLocationMap.put(justClosed,new Tupel(nodeLocationMap.get(justClosed).getLefty(),sr.getLocation().getCharacterOffset()));
-						justClosed=null;
-					}
+                    if(justClosed!=null)
+                    {
+                        nodeLocationMap.put(justClosed,new Tupel(nodeLocationMap.get(justClosed).getLefty(),sr.getLocation().getCharacterOffset()));
+                        justClosed=null;
+                    }
                     String ln = sr.getLocalName();
                     Element newElem;
 
                     if (nsAware) {
                         String qname = sr.getPrefixedName();
                         newElem = doc.createElementNS(sr.getNamespaceURI(), qname);
-						if((sr.getNamespaceURI()!=null)&&(nsmap.containsKey(sr.getPrefix())==false))
-							nsmap.put(sr.getPrefix(),sr.getNamespaceURI());
+                        if((sr.getNamespaceURI()!=null)&&(nsmap.containsKey(sr.getPrefix())==false))
+                            nsmap.put(sr.getPrefix(),sr.getNamespaceURI());
                     } else { // if non-ns-aware, things are simpler:
                         newElem = doc.createElement(ln);
                     }
@@ -352,22 +353,22 @@ public class DOMConverter
                             if (prefix != null && prefix.length() > 0) {
                                 ln = recycler.getQualified(prefix, ln);
                             }
- 							Attr attr=doc.createAttributeNS(sr.getAttributeNamespace(i), ln);
-							attr.setValue(sr.getAttributeValue(i));
-							newElem.setAttributeNode(attr);
-							attributeElementMap.put(attr,newElem);
+                             Attr attr=doc.createAttributeNS(sr.getAttributeNamespace(i), ln);
+                            attr.setValue(sr.getAttributeValue(i));
+                            newElem.setAttributeNode(attr);
+                            attributeElementMap.put(attr,newElem);
                         } else {
-							Attr attr=doc.createAttribute(ln);
-							attr.setValue(sr.getAttributeValue(i));
-							newElem.setAttributeNode(attr);
-							attributeElementMap.put(attr,newElem);
+                            Attr attr=doc.createAttribute(ln);
+                            attr.setValue(sr.getAttributeValue(i));
+                            newElem.setAttributeNode(attr);
+                            attributeElementMap.put(attr,newElem);
                         }
                     }
                     // And then 'push' new element...
                     current.appendChild(newElem); // lgtm [java/dereferenced-value-may-be-null]
                     current = newElem;
-					nodeLocationMap.put(newElem,new Tupel(sr.getLocation().getCharacterOffset(),sr.getLocation().getCharacterOffset()));
-					position=sr.getLocation().getCharacterOffset()+1;
+                    nodeLocationMap.put(newElem,new Tupel(sr.getLocation().getCharacterOffset(),sr.getLocation().getCharacterOffset()));
+                    position=sr.getLocation().getCharacterOffset()+1;
                     continue main_loop;
                 }
 
@@ -381,11 +382,11 @@ public class DOMConverter
                 continue main_loop;
 
             case XMLStreamConstants.DTD:
-				if(justClosed!=null)
-				{
-					nodeLocationMap.put(justClosed,new Tupel(nodeLocationMap.get(justClosed).getLefty(),sr.getLocation().getCharacterOffset()));
-					justClosed=null;
-				}
+                if(justClosed!=null)
+                {
+                    nodeLocationMap.put(justClosed,new Tupel(nodeLocationMap.get(justClosed).getLefty(),sr.getLocation().getCharacterOffset()));
+                    justClosed=null;
+                }
                 /* !!! Note: StAX does not expose enough information about
                  *  doctype declaration (specifically, public and system id!);
                  *  (altough StAX2 would...)
@@ -412,7 +413,7 @@ public class DOMConverter
                 current.appendChild(child); // lgtm [java/dereferenced-value-may-be-null]
             }
         }
-   		simpleNamespaceContext=new SimpleNamespaceContext(nsmap);
+           simpleNamespaceContext=new SimpleNamespaceContext(nsmap);
     }
 
     /*
@@ -424,77 +425,77 @@ public class DOMConverter
     /**
      * Method for getting all namespace prefixes in document
      */
-	public java.util.Set<java.lang.String> getNameSpacePrefixes()
-	{
-		return nsmap.keySet();
-	}
-	public Tupel<Integer, Integer> getLocationForNode(java.lang.String xmlAsString,org.w3c.dom.Node node)
-	{
-		Tupel<Integer, Integer> rv=null;
-		Tupel<Integer, Integer> tupel = nodeLocationMap.containsKey(node)?nodeLocationMap.get(node):nodeLocationMap.get(attributeElementMap.get(node));
-		if(tupel!=null)
-		{
-			if(Attr.class.isAssignableFrom(node.getClass()))
-			{
-				String element=xmlAsString.substring(tupel.getLefty() - 1,tupel.getRighty());
-				//https://blog.stevenlevithan.com/archives/match-quoted-string
-				java.lang.String patStrng="((.*?)"+node.getNodeName()+"=([\"']).*?\\3).*";
-				//https://stackoverflow.com/questions/22793989/regex-matching-quoted-string-but-ignoring-escaped-quotation-mark
-				//						java.lang.String patStrng="((.*?)"+node.getNodeName()+"=\"(?:[^\\\\\"]+|\\\\.|\\\\\\\\)*\").*";
-				java.util.regex.Pattern pat=java.util.regex.Pattern.compile(patStrng, Pattern.DOTALL|Pattern.MULTILINE);
-				java.util.regex.Matcher matcher=pat.matcher(element);
-				if(matcher.matches())
-				{
-					int left=tupel.getLefty() +matcher.group(2).length()-1;
-					int right=tupel.getLefty() +matcher.group(1).length()-1;
-					rv=new Tupel<Integer, Integer>(left,right);
-				}
-			}
-			else
-			{
-				rv=new Tupel<Integer, Integer>(tupel.getLefty() ,tupel.getRighty());
-			}
-		}
-		return rv;
-	}
+    public java.util.Set<java.lang.String> getNameSpacePrefixes()
+    {
+        return nsmap.keySet();
+    }
+    public Tupel<Integer, Integer> getLocationForNode(java.lang.String xmlAsString,org.w3c.dom.Node node)
+    {
+        Tupel<Integer, Integer> rv=null;
+        Tupel<Integer, Integer> tupel = nodeLocationMap.containsKey(node)?nodeLocationMap.get(node):nodeLocationMap.get(attributeElementMap.get(node));
+        if(tupel!=null)
+        {
+            if(Attr.class.isAssignableFrom(node.getClass()))
+            {
+                String element=xmlAsString.substring(tupel.getLefty() - 1,tupel.getRighty());
+                //https://blog.stevenlevithan.com/archives/match-quoted-string
+                java.lang.String patStrng="((.*?)"+node.getNodeName()+"=([\"']).*?\\3).*";
+                //https://stackoverflow.com/questions/22793989/regex-matching-quoted-string-but-ignoring-escaped-quotation-mark
+                //                        java.lang.String patStrng="((.*?)"+node.getNodeName()+"=\"(?:[^\\\\\"]+|\\\\.|\\\\\\\\)*\").*";
+                java.util.regex.Pattern pat=java.util.regex.Pattern.compile(patStrng, Pattern.DOTALL|Pattern.MULTILINE);
+                java.util.regex.Matcher matcher=pat.matcher(element);
+                if(matcher.matches())
+                {
+                    int left=tupel.getLefty() +matcher.group(2).length()-1;
+                    int right=tupel.getLefty() +matcher.group(1).length()-1;
+                    rv=new Tupel<Integer, Integer>(left,right);
+                }
+            }
+            else
+            {
+                rv=new Tupel<Integer, Integer>(tupel.getLefty() ,tupel.getRighty());
+            }
+        }
+        return rv;
+    }
 
-	public NamespaceContext getSimpleNamespaceContext()
-	{
-		return simpleNamespaceContext;
-	}
+    public NamespaceContext getSimpleNamespaceContext()
+    {
+        return simpleNamespaceContext;
+    }
 
-	private String getPrefixedName(XMLStreamReader sr)
-	{
-		switch (sr.getEventType()) {
-			case XMLStreamConstants.START_ELEMENT:
-			case XMLStreamConstants.END_ELEMENT:
-			{
-				String prefix = sr.getPrefix();
-				String ln = sr.getLocalName();
+    private String getPrefixedName(XMLStreamReader sr)
+    {
+        switch (sr.getEventType()) {
+            case XMLStreamConstants.START_ELEMENT:
+            case XMLStreamConstants.END_ELEMENT:
+            {
+                String prefix = sr.getPrefix();
+                String ln = sr.getLocalName();
 
-				if (prefix == null || prefix.length() == 0) {
-					return ln;
-				}
-				StringBuffer sb = new StringBuffer(ln.length() + 1 + prefix.length());
-				sb.append(prefix);
-				sb.append(':');
-				sb.append(ln);
-				return sb.toString();
-			}
-			case XMLStreamConstants.ENTITY_REFERENCE:
-				return sr.getLocalName();
-			case XMLStreamConstants.PROCESSING_INSTRUCTION:
-				return sr.getPITarget();
-			case XMLStreamConstants.DTD:
-				return getDTDRootName();
+                if (prefix == null || prefix.length() == 0) {
+                    return ln;
+                }
+                StringBuffer sb = new StringBuffer(ln.length() + 1 + prefix.length());
+                sb.append(prefix);
+                sb.append(':');
+                sb.append(ln);
+                return sb.toString();
+            }
+            case XMLStreamConstants.ENTITY_REFERENCE:
+                return sr.getLocalName();
+            case XMLStreamConstants.PROCESSING_INSTRUCTION:
+                return sr.getPITarget();
+            case XMLStreamConstants.DTD:
+                return getDTDRootName();
 
-		}
-		throw new IllegalStateException("Current state not START_ELEMENT, END_ELEMENT, ENTITY_REFERENCE, PROCESSING_INSTRUCTION or DTD");
-	}
+        }
+        throw new IllegalStateException("Current state not START_ELEMENT, END_ELEMENT, ENTITY_REFERENCE, PROCESSING_INSTRUCTION or DTD");
+    }
 
-	public String getDTDRootName() {
-		return null;
-	}
+    public String getDTDRootName() {
+        return null;
+    }
 
     /**
      * Method for writing out given DOM document using specified
