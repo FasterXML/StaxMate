@@ -4,6 +4,11 @@ Project: StaxMate
 == Releases ==
 ------------------------------------------------------------------------
 
+2.4.1 (10-Oct-2023)
+
+- Dependency updates: Woodstox 6.5.1, oss-parent 55
+
+
 2.4.0 (16-Oct-2020)
 
 - Update baseline JDK dependency to Java 6
