@@ -91,21 +91,7 @@ It builds on top of a Stax (JSR-173) compliant XML processors such as Woodstox o
 
   <build>
     <plugins>
-        <plugin><!-- plug-in to attach source bundle in repo -->
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-source-plugin</artifactId>
-	  <version>${version.plugin.source}</version>
-          <executions>
-            <execution>
-              <id>attach-sources</id>
-              <goals>
-                <goal>jar</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-
-        <!-- javadocs? yes please -->
+       <!-- javadocs? yes please -->
        <plugin>
          <groupId>org.apache.maven.plugins</groupId>
          <artifactId>maven-javadoc-plugin</artifactId>
@@ -121,7 +107,6 @@ It builds on top of a Stax (JSR-173) compliant XML processors such as Woodstox o
         <plugin>
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-bundle-plugin</artifactId>
-          <version>2.5.3</version>
           <extensions>true</extensions>
           <configuration>
             <instructions>
