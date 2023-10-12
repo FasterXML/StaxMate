@@ -18,8 +18,8 @@ In practice, some implementations may work better than others -- you may want to
 
 As of version 1.2, following implementations are known to work well enough to pass StaxMate unit tests:
 
- * [Woodstox](http://woodstox.codehaus.org)
- * [Sun SJSXP](http://sjsxp.dev.java.net)
+ * [Woodstox](https://github.com/FasterXML/woodstox)
+ * [Sun SJSXP](https://web.archive.org/web/20160306063659/http://sjsxp.java.net/)
  * [Aalto](https://github.com/FasterXML/aalto-xml)
 
 Since the initial development was done against Woodstox Stax processor, Woodstox is probably least likely to have problems with StaxMate.
