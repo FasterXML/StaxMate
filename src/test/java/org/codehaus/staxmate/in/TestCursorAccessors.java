@@ -10,9 +10,10 @@ import javax.xml.namespace.QName;
 import org.codehaus.staxmate.SMInputFactory;
 
 /**
- * Tests targeting the various name, namespace, attribute-metadata, count
- * and user-data accessors of {@link SMInputCursor} that are not exercised
- * by the other input-side tests.
+ * Tests targeting the name/namespace, attribute-metadata, current-event and
+ * user-data accessors of {@link SMInputCursor} that are not exercised by the
+ * other input-side tests. (Typed value access lives in {@code TestTyped};
+ * node/element counts in {@code TestLocation}.)
  */
 public class TestCursorAccessors
     extends ReaderTestBase
@@ -103,42 +104,11 @@ public class TestCursorAccessors
     }
 
     /**
-     * Verifies typed element value accessors not covered elsewhere
-     * (long and double, with and without default values).
+     * Verifies current-event accessors and the arbitrary user-data slot
+     * ({@code getData}/{@code setData}).
      */
     @Test
-    public void testTypedLongAndDoubleElem()
-        throws Exception
-    {
-        // one typed accessor per element (each consumes the element content):
-        String XML = "<root><a>  -123456789012  </a><b>2.5</b><c/><d/></root>";
-        SMInputFactory sf = getInputFactory();
-        SMInputCursor crsr = sf.rootElementCursor(new StringReader(XML))
-            .advance().childElementCursor().advance();
-
-        assertEquals("a", crsr.getLocalName());
-        assertEquals(-123456789012L, crsr.getElemLongValue());
-
-        assertEquals(SMEvent.START_ELEMENT, crsr.getNext());
-        assertEquals("b", crsr.getLocalName());
-        assertEquals(2.5, crsr.getElemDoubleValue());
-
-        // empty elements fall back to the supplied default
-        assertEquals(SMEvent.START_ELEMENT, crsr.getNext());
-        assertEquals("c", crsr.getLocalName());
-        assertEquals(99L, crsr.getElemLongValue(99L));
-
-        assertEquals(SMEvent.START_ELEMENT, crsr.getNext());
-        assertEquals("d", crsr.getLocalName());
-        assertEquals(1.5, crsr.getElemDoubleValue(1.5));
-    }
-
-    /**
-     * Verifies node/element counters, current-event accessors, and the
-     * arbitrary user-data slot ({@code getData}/{@code setData}).
-     */
-    @Test
-    public void testCountsEventsAndData()
+    public void testEventAndDataAccessors()
         throws Exception
     {
         String XML = "<root><a/>text<b/></root>";
@@ -155,26 +125,5 @@ public class TestCursorAccessors
         Object marker = new Object();
         rootc.setData(marker);
         assertSame(marker, rootc.getData());
-
-        // iterate all descendants, counting nodes vs elements. For
-        // "<a/>text<b/>" a mixed descendant cursor exposes 5 events:
-        // a-start, a-end, text, b-start, b-end (END_ELEMENTs are returned
-        // except for the outermost). Counts live on the cursor that does the
-        // traversal (the child), NOT on its parent.
-        SMInputCursor desc = rootc.descendantMixedCursor();
-        int events = 0;
-        while (desc.getNext() != null) {
-            ++events;
-        }
-        assertEquals(5, events);
-        // getNodeCount is 6, not 5: it also counts the final advance over the
-        // outermost END_ELEMENT (</root>), which terminates iteration (getNext
-        // returns null) but still moves the underlying stream reader.
-        assertEquals(6, desc.getNodeCount());
-        assertEquals(2, desc.getElementCount());
-        // ...and the parent's own counts are unaffected by the child cursor:
-        // rootc has only advanced over the single root start element.
-        assertEquals(1, rootc.getNodeCount());
-        assertEquals(1, rootc.getElementCount());
     }
 }

@@ -193,6 +193,39 @@ public class TestTyped extends ReaderTestBase
     }
 
     @Test
+    public void testTypedLongElem()
+        throws XMLStreamException
+    {
+        // surrounding whitespace should be ignored; empty element uses default
+        String XML = "<root><a>  -123456789012  </a><b/></root>";
+        SMInputFactory sf = getInputFactory();
+        SMInputCursor crsr = sf.rootElementCursor(new StringReader(XML))
+            .advance().childElementCursor().advance();
+        assertEquals("a", crsr.getLocalName());
+        assertEquals(-123456789012L, crsr.getElemLongValue());
+        assertEquals(SMEvent.START_ELEMENT, crsr.getNext());
+        assertEquals("b", crsr.getLocalName());
+        assertEquals(99L, crsr.getElemLongValue(99L));
+        assertNull(crsr.getNext());
+    }
+
+    @Test
+    public void testTypedDoubleElem()
+        throws XMLStreamException
+    {
+        String XML = "<root><a>2.5</a><b/></root>";
+        SMInputFactory sf = getInputFactory();
+        SMInputCursor crsr = sf.rootElementCursor(new StringReader(XML))
+            .advance().childElementCursor().advance();
+        assertEquals("a", crsr.getLocalName());
+        assertEquals(2.5, crsr.getElemDoubleValue());
+        assertEquals(SMEvent.START_ELEMENT, crsr.getNext());
+        assertEquals("b", crsr.getLocalName());
+        assertEquals(1.5, crsr.getElemDoubleValue(1.5));
+        assertNull(crsr.getNext());
+    }
+
+    @Test
     public void testValidTypedEnumElem()
         throws XMLStreamException
     {

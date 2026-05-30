@@ -11,9 +11,10 @@ import static javax.xml.stream.XMLStreamConstants.*;
 import org.codehaus.staxmate.SMOutputFactory;
 
 /**
- * Tests that exercise the various write paths of {@link SMOutputContext}
- * (comments, processing instructions, CDATA, entity references, mixed
- * content and root fragments) through the public output API.
+ * Tests that exercise write paths of {@link SMOutputContext} not covered by
+ * the more focused output tests: comments, processing instructions, CDATA,
+ * char-array character content and root fragments. (Indentation lives in
+ * {@code TestIndentation}, entity references in {@code TestEntityRef}.)
  */
 public class TestOutputContext
     extends BaseWriterTest
@@ -60,29 +61,29 @@ public class TestOutputContext
     }
 
     /**
-     * Verifies that character content added via the char[] overloads, and
-     * an entity reference, are written through the context correctly.
+     * Verifies that character content added via the {@code char[]} overload
+     * is written through the context correctly (the {@code String} overload
+     * is covered widely elsewhere).
      */
     @Test
-    public void testCharArrayAndEntityRef()
+    public void testCharArrayCharacters()
         throws Exception
     {
         StringWriter sw = new StringWriter();
         SMOutputDocument doc = createSimpleDoc(sw);
 
         SMOutputElement root = doc.addElement("root");
-        char[] buf = "Hello".toCharArray();
-        root.addCharacters(buf, 0, buf.length);
-        root.addEntityRef("amp");
+        char[] buf = "xHelloy".toCharArray();
+        // write just the "Hello" slice, to exercise offset/length handling
+        root.addCharacters(buf, 1, 5);
         root.addCharacters("World");
         doc.closeRoot();
 
-        // amp entity expands to '&' once coalesced
         XMLStreamReader sr = getCoalescingReader(sw.toString());
         assertTokenType(START_ELEMENT, sr.next());
         assertElem(sr, null, "root");
         sr.next(); // advance onto the (coalesced) text node
-        assertEquals("Hello&World", collectAllText(sr));
+        assertEquals("HelloWorld", collectAllText(sr));
         sr.close();
     }
 
@@ -124,35 +125,5 @@ public class TestOutputContext
     {
         sr.next();
         return sr;
-    }
-
-    /**
-     * Exercises indentation together with comments and processing
-     * instructions, which hit the indentation-suppression branches in the
-     * context for non-element nodes.
-     */
-    @Test
-    public void testIndentedWithCommentsAndPI()
-        throws Exception
-    {
-        StringWriter sw = new StringWriter();
-        SMOutputDocument doc = createSimpleDoc(sw);
-        doc.setIndentation("\n                    ", 1, 2);
-
-        SMOutputElement root = doc.addElement("root");
-        root.addComment("c");
-        root.addProcessingInstruction("pi", "d");
-        root.addElement("leaf");
-        doc.closeRoot();
-
-        String xml = sw.toString();
-        // newlines and indentation should be present around the nodes
-        assertTrue(xml.indexOf("\n  ") > 0,
-                "expected indentation newlines, got: "+xml);
-        // and it must still be well-formed / re-readable
-        XMLStreamReader sr = getCoalescingReader(xml);
-        assertTokenType(START_ELEMENT, sr.next());
-        assertElem(sr, null, "root");
-        sr.close();
     }
 }

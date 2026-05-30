@@ -61,4 +61,32 @@ public class TestLocation
         assertEquals(2, crsr.getElementCount());
         assertNull(crsr.getNext());
     }
+
+    /**
+     * A child/descendant cursor keeps its own counts; iterating it must not
+     * bump the parent cursor's node/element counts.
+     */
+    @Test
+    public void testCountsNotPropagatedToParent()
+        throws XMLStreamException
+    {
+        SMInputFactory sf = new SMInputFactory(XMLInputFactory.newInstance());
+        String XML = "<root><a/>text<b/></root>";
+        SMInputCursor rootc = sf.rootElementCursor(new StringReader(XML)).advance();
+
+        // mixed descendant cursor exposes a-start, a-end, text, b-start, b-end
+        SMInputCursor desc = rootc.descendantMixedCursor();
+        int events = 0;
+        while (desc.getNext() != null) {
+            ++events;
+        }
+        assertEquals(5, events);
+        // getNodeCount is 6: it also counts the final advance over the
+        // outermost END_ELEMENT (</root>) that terminates iteration.
+        assertEquals(6, desc.getNodeCount());
+        assertEquals(2, desc.getElementCount());
+        // parent only ever advanced over the single root start element:
+        assertEquals(1, rootc.getNodeCount());
+        assertEquals(1, rootc.getElementCount());
+    }
 }
