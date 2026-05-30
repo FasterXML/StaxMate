@@ -1,5 +1,7 @@
 package org.codehaus.staxmate;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.*;
 
 import javax.xml.stream.*;
@@ -8,7 +10,6 @@ import static javax.xml.stream.XMLStreamConstants.*;
 import org.codehaus.staxmate.in.*;
 
 public abstract class StaxMateTestBase
-    extends junit.framework.TestCase
 {
     protected final static String BASE64_ENCODED =
             "TWFuIGlzIGRpc3Rpbmd1aXNoZWQsIG5vdCBvbmx5IGJ5IGhpcyByZWFzb24sIGJ1dCBieSB0aGlz"

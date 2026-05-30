@@ -1,5 +1,9 @@
 package org.codehaus.staxmate.in;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -38,6 +42,7 @@ public class TestPartialTraversal
 +"</A1>"
      ;
 
+  @BeforeEach
   public void setUp() throws XMLStreamException
   {
     XMLInputFactory factory = XMLInputFactory.newInstance();
@@ -47,6 +52,7 @@ public class TestPartialTraversal
 
   // The c_iterator reads A1B1C1
   // b_iterator is moved and reads A1B1C2 should read A1B2
+  @Test
   public void testOneLevelDeepPartialChildIteration() throws Exception
   {
     assertGotNextElementNamed(a_iterator, "A1");
@@ -80,6 +86,7 @@ public class TestPartialTraversal
 
   // Works initially...
   // Works with patch1
+  @Test
   public void testOneLevelDeepChildCursorAcquisition() throws Exception
   {
     assertGotNextElementNamed(a_iterator, "A1");
@@ -105,6 +112,7 @@ public class TestPartialTraversal
   // in skipTree, the HAS_CHILD State was falling through to skipSubTree(1)
   // and needed to be skipSubTree(0)
   // Added that change and everything works... so far...
+  @Test
   public void testTwoLevelDeepPartialCursorIteration() throws Exception
   {
     
@@ -127,6 +135,7 @@ public class TestPartialTraversal
   }
   
   // One more try just to be safe, two level up move, without moving the d_iterator
+  @Test
   public void testTwoLevelDeepChildCursorAcquisition() throws Exception
   {
     assertGotNextElementNamed(a_iterator,"A1");

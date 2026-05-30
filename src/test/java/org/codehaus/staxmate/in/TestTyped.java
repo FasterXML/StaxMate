@@ -1,5 +1,8 @@
 package org.codehaus.staxmate.in;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
 import java.io.*;
 
 import javax.xml.stream.*;
@@ -38,6 +41,7 @@ public class TestTyped extends ReaderTestBase
     /**********************************************************************
      */
 
+    @Test
     public void testTypedBooleanAttr()
         throws XMLStreamException
     {
@@ -52,6 +56,7 @@ public class TestTyped extends ReaderTestBase
         assertTrue(rootc.getAttrBooleanValue(2, true));
     }
 
+    @Test
     public void testTypedIntAttr()
         throws XMLStreamException
     {
@@ -64,6 +69,7 @@ public class TestTyped extends ReaderTestBase
         assertEquals(13, rootc.getAttrIntValue(1, 13));
     }
 
+    @Test
     public void testTypedLongAttr()
         throws XMLStreamException
     {
@@ -76,6 +82,7 @@ public class TestTyped extends ReaderTestBase
         assertEquals(13L, rootc.getAttrLongValue(1, 13L));
     }
 
+    @Test
     public void testTypedDoubleAttr()
         throws XMLStreamException
     {
@@ -88,6 +95,7 @@ public class TestTyped extends ReaderTestBase
         assertEquals(0.25, rootc.getAttrDoubleValue(1, 0.25));
     }
 
+    @Test
     public void testValidTypedEnumAttr()
         throws XMLStreamException
     {
@@ -99,6 +107,7 @@ public class TestTyped extends ReaderTestBase
         assertEquals(DummyEnum.FAIL, rootc.getAttrEnumValue(1, DummyEnum.class));
     }
 
+    @Test
     public void testInvalidTypedEnumAttr()
         throws XMLStreamException
     {
@@ -119,6 +128,7 @@ public class TestTyped extends ReaderTestBase
     /**********************************************************************
      */
     
+    @Test
     public void testTextElem()
         throws XMLStreamException
     {
@@ -136,6 +146,7 @@ public class TestTyped extends ReaderTestBase
         assertNull(rootc.getNext());
     }
 
+    @Test
     public void testTypedBooleanElem()
         throws XMLStreamException
     {
@@ -157,6 +168,7 @@ public class TestTyped extends ReaderTestBase
         assertNull(rootc.getNext());
     }
 
+    @Test
     public void testTypedIntElem()
         throws XMLStreamException
     {
@@ -180,6 +192,7 @@ public class TestTyped extends ReaderTestBase
         assertNull(rootc.getNext());
     }
 
+    @Test
     public void testValidTypedEnumElem()
         throws XMLStreamException
     {
@@ -191,6 +204,7 @@ public class TestTyped extends ReaderTestBase
         assertNull(rootc.getNext());
     }
 
+    @Test
     public void testInvalidTypedEnumElem()
         throws XMLStreamException
     {

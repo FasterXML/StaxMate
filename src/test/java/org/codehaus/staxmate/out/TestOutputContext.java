@@ -1,5 +1,8 @@
 package org.codehaus.staxmate.out;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
 import java.io.*;
 
 import javax.xml.stream.*;
@@ -20,6 +23,7 @@ public class TestOutputContext
      * plain text under a single element, then reads it back to verify each
      * node type round-trips.
      */
+    @Test
     public void testMiscNodeTypes()
         throws Exception
     {
@@ -59,6 +63,7 @@ public class TestOutputContext
      * Verifies that character content added via the char[] overloads, and
      * an entity reference, are written through the context correctly.
      */
+    @Test
     public void testCharArrayAndEntityRef()
         throws Exception
     {
@@ -86,6 +91,7 @@ public class TestOutputContext
      * wrapper) which goes through a different set of context methods than
      * the full-document path.
      */
+    @Test
     public void testRootFragment()
         throws Exception
     {
@@ -100,8 +106,8 @@ public class TestOutputContext
 
         String xml = sw.toString();
         // fragment must not contain an XML declaration
-        assertFalse("fragment should have no XML declaration: "+xml,
-                xml.startsWith("<?xml"));
+        assertFalse(xml.startsWith("<?xml"),
+                "fragment should have no XML declaration: "+xml);
 
         XMLStreamReader sr = getCoalescingReader(xml);
         assertTokenType(START_ELEMENT, sr.next());
@@ -125,6 +131,7 @@ public class TestOutputContext
      * instructions, which hit the indentation-suppression branches in the
      * context for non-element nodes.
      */
+    @Test
     public void testIndentedWithCommentsAndPI()
         throws Exception
     {
@@ -140,8 +147,8 @@ public class TestOutputContext
 
         String xml = sw.toString();
         // newlines and indentation should be present around the nodes
-        assertTrue("expected indentation newlines, got: "+xml,
-                xml.indexOf("\n  ") > 0);
+        assertTrue(xml.indexOf("\n  ") > 0,
+                "expected indentation newlines, got: "+xml);
         // and it must still be well-formed / re-readable
         XMLStreamReader sr = getCoalescingReader(xml);
         assertTokenType(START_ELEMENT, sr.next());

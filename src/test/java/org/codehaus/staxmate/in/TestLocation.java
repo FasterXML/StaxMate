@@ -1,5 +1,8 @@
 package org.codehaus.staxmate.in;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
 import java.io.*;
 
 import javax.xml.stream.*;
@@ -17,6 +20,7 @@ public class TestLocation
      * Unit test that will verify that "node count" is kept track of
      * when using hierarchic (nested) cursors.
      */
+    @Test
     public void testNodeCountNested()
         throws XMLStreamException
     {
@@ -39,6 +43,7 @@ public class TestLocation
      * Unit test that will verify that "element count" is kept track of
      * when using hierarchic (nested) cursors.
      */
+    @Test
     public void testElementCountNested()
         throws XMLStreamException
     {

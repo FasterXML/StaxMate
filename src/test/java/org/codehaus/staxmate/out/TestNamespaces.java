@@ -1,5 +1,8 @@
 package org.codehaus.staxmate.out;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
 import java.io.*;
 
 import javax.xml.stream.*;
@@ -11,6 +14,7 @@ public class TestNamespaces
     /**
      * Test to verify that [STAXMATE-25] works as expected.
      */
+    @Test
     public void testPredeclaredNs()
         throws XMLStreamException
     {

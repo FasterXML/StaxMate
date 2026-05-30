@@ -1,13 +1,15 @@
 package org.codehaus.staxmate.util;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
 
 /**
  * Unit tests for the {@link DataUtil} helper methods.
  */
 public class TestDataUtil
-    extends TestCase
 {
+    @Test
     public void testTrim()
     {
         // null and "empty" (after trimming) values become null
@@ -22,12 +24,14 @@ public class TestDataUtil
         assertEquals("a b", DataUtil.trim("\t a b \n"));
     }
 
+    @Test
     public void testEnsureNotEmpty()
     {
         assertEquals("abc", DataUtil.ensureNotEmpty("abc"));
         assertEquals("abc", DataUtil.ensureNotEmpty("  abc "));
     }
 
+    @Test
     public void testEnsureNotEmptyFailsOnNull()
     {
         try {
@@ -38,6 +42,7 @@ public class TestDataUtil
         }
     }
 
+    @Test
     public void testEnsureNotEmptyFailsOnBlank()
     {
         try {

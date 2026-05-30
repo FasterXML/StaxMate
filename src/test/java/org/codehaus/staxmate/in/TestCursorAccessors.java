@@ -1,5 +1,8 @@
 package org.codehaus.staxmate.in;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
 import java.io.StringReader;
 
 import javax.xml.namespace.QName;
@@ -19,6 +22,7 @@ public class TestCursorAccessors
      * prefixed name) and the various {@code hasName}/{@code hasLocalName}
      * checks, for both namespaced and non-namespaced elements.
      */
+    @Test
     public void testElementNameAccessors()
         throws Exception
     {
@@ -30,8 +34,8 @@ public class TestCursorAccessors
         // root has no namespace
         assertEquals("root", rootc.getLocalName());
         String rootPrefix = rootc.getPrefix();
-        assertTrue("root prefix should be null or empty, was '"+rootPrefix+"'",
-                rootPrefix == null || rootPrefix.length() == 0);
+        assertTrue(rootPrefix == null || rootPrefix.length() == 0,
+                "root prefix should be null or empty, was '"+rootPrefix+"'");
         assertEquals("", rootc.getNsUri());
         assertEquals("root", rootc.getPrefixedName());
         assertEquals(new QName("root"), rootc.getQName());
@@ -59,6 +63,7 @@ public class TestCursorAccessors
      * Verifies attribute-metadata accessors: count, index lookup, and
      * per-index name/prefix/ns-uri/value, plus the by-name value lookups.
      */
+    @Test
     public void testAttributeMetadata()
         throws Exception
     {
@@ -70,7 +75,7 @@ public class TestCursorAccessors
         assertEquals(3, rootc.getAttrCount());
 
         int idIdx = rootc.findAttrIndex(null, "id");
-        assertTrue("'id' attribute should be found", idIdx >= 0);
+        assertTrue(idIdx >= 0, "'id' attribute should be found");
         assertEquals("id", rootc.getAttrLocalName(idIdx));
         assertEquals("7", rootc.getAttrValue(idIdx));
         assertEquals(new QName("id"), rootc.getAttrName(idIdx));
@@ -81,7 +86,7 @@ public class TestCursorAccessors
         assertTrue(idNs == null || idNs.length() == 0);
 
         int typeIdx = rootc.findAttrIndex(NS, "type");
-        assertTrue("namespaced attribute should be found", typeIdx >= 0);
+        assertTrue(typeIdx >= 0, "namespaced attribute should be found");
         assertEquals("a", rootc.getAttrPrefix(typeIdx));
         assertEquals(NS, rootc.getAttrNsUri(typeIdx));
         assertEquals(new QName(NS, "type", "a"), rootc.getAttrName(typeIdx));
@@ -101,6 +106,7 @@ public class TestCursorAccessors
      * Verifies typed element value accessors not covered elsewhere
      * (long and double, with and without default values).
      */
+    @Test
     public void testTypedLongAndDoubleElem()
         throws Exception
     {
@@ -131,6 +137,7 @@ public class TestCursorAccessors
      * Verifies node/element counters, current-event accessors, and the
      * arbitrary user-data slot ({@code getData}/{@code setData}).
      */
+    @Test
     public void testCountsEventsAndData()
         throws Exception
     {

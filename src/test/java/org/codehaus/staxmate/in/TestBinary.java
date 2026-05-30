@@ -1,9 +1,13 @@
 package org.codehaus.staxmate.in;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
 import java.io.StringReader;
 
 public class TestBinary extends ReaderTestBase
 {
+    @Test
     public void testSimpleAttribute() throws Exception
     {
         String XML = "<tag data='"+BASE64_ENCODED+"' />";
@@ -17,6 +21,7 @@ public class TestBinary extends ReaderTestBase
         assertNull(rootc.getNext());
     }
 
+    @Test
     public void testSimpleElement() throws Exception
     {
         String XML = "<root><data>"+BASE64_ENCODED+"</data></root>";

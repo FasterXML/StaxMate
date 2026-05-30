@@ -1,5 +1,8 @@
 package org.codehaus.staxmate.in;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
 import java.io.StringReader;
 
 import javax.xml.stream.XMLStreamReader;
@@ -14,18 +17,22 @@ public class TestReadingFor37 extends ReaderTestBase
     /**********************************************************************
      */
 
+    @Test
     public void testStaxMate37aWithNative() throws Exception {
         _testStaxMate37a(false);
     }
 
+    @Test
     public void testStaxMate37aWithWrapper() throws Exception {
         _testStaxMate37a(true);
     }
     
+    @Test
     public void testStaxMate37bWithNative() throws Exception {
         _testStaxMate37b(false);
     }
 
+    @Test
     public void testStaxMate37bWithWrapper() throws Exception {
         _testStaxMate37b(true);
     }

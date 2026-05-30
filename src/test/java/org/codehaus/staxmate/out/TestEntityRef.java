@@ -1,5 +1,8 @@
 package org.codehaus.staxmate.out;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
 import java.io.*;
 
 import javax.xml.stream.*;
@@ -20,6 +23,7 @@ public class TestEntityRef
      * forces creation of an {@link SMOEntityRef} node, whose output is
      * deferred until the fragment is released.
      */
+    @Test
     public void testBufferedEntityRef()
         throws Exception
     {
@@ -51,6 +55,7 @@ public class TestEntityRef
      * Adding an entity reference directly to a writable element writes it
      * straight through (the non-buffered path).
      */
+    @Test
     public void testDirectEntityRef()
         throws Exception
     {

@@ -1,5 +1,8 @@
 package org.codehaus.staxmate.out;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
 import java.io.*;
 
 import javax.xml.stream.*;
@@ -13,6 +16,7 @@ public class TestSimple
     /**
      * Simple test to verify namespace bindings.
      */
+    @Test
     public void testSimpleNS()
         throws Exception
     {
@@ -49,6 +53,7 @@ public class TestSimple
      * Another namespace binding test; this time checking
      * whether use of optional prefix argument might confuse writer.
      */
+    @Test
     public void testPrefixedNS()
         throws Exception
     {
@@ -88,6 +93,7 @@ public class TestSimple
      * Unit test for checking fix for [STAXMATE-20], incorrect
      * scoping for non-default namespaces.
      */
+    @Test
     public void testPrefixedNS2()
         throws Exception
     {
@@ -128,6 +134,7 @@ public class TestSimple
      * Unit test for verifying that attribute-namespace binding
      * works correctly, distinct from handling of element namespaces.
      */
+    @Test
     public void testAttrNS2()
         throws Exception
     {

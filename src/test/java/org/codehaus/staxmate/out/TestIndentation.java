@@ -1,5 +1,8 @@
 package org.codehaus.staxmate.out;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
 import java.io.*;
 
 import org.codehaus.staxmate.SMOutputFactory;
@@ -15,6 +18,7 @@ public class TestIndentation
      * Basic test: a nested element tree (no mixed content) should get
      * a newline plus increasing indentation for each level.
      */
+    @Test
     public void testNestedIndentation()
         throws Exception
     {
@@ -46,6 +50,7 @@ public class TestIndentation
      * heuristically suppressed for that element so the text is not
      * altered.
      */
+    @Test
     public void testIndentationSuppressedByText()
         throws Exception
     {
@@ -71,6 +76,7 @@ public class TestIndentation
     /**
      * Verifies that the per-level 'step' is honored (here: 1 char per level).
      */
+    @Test
     public void testIndentationStep()
         throws Exception
     {

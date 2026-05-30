@@ -1,5 +1,7 @@
 package org.codehaus.staxmate.in;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import javax.xml.stream.*;
 
 import org.codehaus.stax2.XMLStreamReader2;

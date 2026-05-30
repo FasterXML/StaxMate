@@ -1,5 +1,8 @@
 package org.codehaus.staxmate.in;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
 import java.io.*;
 
 import javax.xml.stream.*;
@@ -14,6 +17,7 @@ import org.codehaus.staxmate.SMInputFactory;
 public class TestSimpleText
     extends ReaderTestBase
 {
+    @Test
     public void testSimpleRead()
         throws XMLStreamException
     {
@@ -33,6 +37,7 @@ public class TestSimpleText
         }
     }
 
+    @Test
     public void testCollectText()
         throws XMLStreamException
     {
