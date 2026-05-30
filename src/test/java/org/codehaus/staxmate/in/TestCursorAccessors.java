@@ -34,9 +34,7 @@ public class TestCursorAccessors
 
         // root has no namespace
         assertEquals("root", rootc.getLocalName());
-        String rootPrefix = rootc.getPrefix();
-        assertTrue(rootPrefix == null || rootPrefix.length() == 0,
-                "root prefix should be null or empty, was '"+rootPrefix+"'");
+        assertEmpty(rootc.getPrefix());
         assertEquals("", rootc.getNsUri());
         assertEquals("root", rootc.getPrefixedName());
         assertEquals(new QName("root"), rootc.getQName());
@@ -81,10 +79,8 @@ public class TestCursorAccessors
         assertEquals("7", rootc.getAttrValue(idIdx));
         assertEquals(new QName("id"), rootc.getAttrName(idIdx));
         // no prefix / namespace for plain attribute
-        String idPrefix = rootc.getAttrPrefix(idIdx);
-        assertTrue(idPrefix == null || idPrefix.length() == 0);
-        String idNs = rootc.getAttrNsUri(idIdx);
-        assertTrue(idNs == null || idNs.length() == 0);
+        assertEmpty(rootc.getAttrPrefix(idIdx));
+        assertEmpty(rootc.getAttrNsUri(idIdx));
 
         int typeIdx = rootc.findAttrIndex(NS, "type");
         assertTrue(typeIdx >= 0, "namespaced attribute should be found");

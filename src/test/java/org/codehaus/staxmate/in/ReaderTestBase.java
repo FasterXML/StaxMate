@@ -2,6 +2,8 @@ package org.codehaus.staxmate.in;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.StringReader;
+
 import javax.xml.stream.*;
 
 import org.codehaus.stax2.XMLStreamReader2;
@@ -10,6 +12,16 @@ import org.codehaus.stax2.ri.Stax2ReaderAdapter;
 abstract class ReaderTestBase
     extends org.codehaus.staxmate.StaxMateTestBase
 {
+    /**
+     * Convenience helper: builds a hierarchic (nested) root cursor over the
+     * given XML using the shared input factory. Caller advances as needed.
+     */
+    protected SMInputCursor rootElementCursor(String xml)
+        throws XMLStreamException
+    {
+        return getInputFactory().rootElementCursor(new StringReader(xml));
+    }
+
     protected void assertElem(SMInputCursor crsr, String expURI, String expLN)
         throws XMLStreamException
     {
