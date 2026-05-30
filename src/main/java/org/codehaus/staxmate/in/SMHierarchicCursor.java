@@ -30,6 +30,7 @@ public class SMHierarchicCursor
     /**********************************************************************
      */
 
+    @Override
     public int getParentCount() {
         return _baseDepth;
     }
@@ -40,6 +41,7 @@ public class SMHierarchicCursor
     /**********************************************************************
      */
 
+    @Override
     public SMEvent getNext()
         throws XMLStreamException
     {
@@ -119,13 +121,13 @@ public class SMHierarchicCursor
         return null;
     }
 
-    public SMInputCursor constructChildCursor(SMFilter f)
-    {
+    @Override
+    public SMInputCursor constructChildCursor(SMFilter f) {
         return new SMHierarchicCursor(_context, this, f);
     }
 
-    public SMInputCursor constructDescendantCursor(SMFilter f)
-    {
+    @Override
+    public SMInputCursor constructDescendantCursor(SMFilter f) {
         return new SMFlatteningCursor(_context, this, f);
     }
 

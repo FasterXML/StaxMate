@@ -44,15 +44,23 @@ public class DefaultElementInfo
     /////////////////////////////////////////////
      */
 
+    @Override
     public SMElementInfo getParent() { return mParentElem; }
+    @Override
     public SMElementInfo getPreviousSibling() { return mPrevSiblingElem; }
 
+    @Override
     public int getNodeIndex() { return mNodeIndex; }
+    @Override
     public int getElementIndex() { return mElemIndex; }
+    @Override
     public int getDepth() { return mDepth; }
 
+    @Override
     public String getNamespaceURI() { return mNsURI; }
+    @Override
     public String getLocalName() { return mLocalName; }
+    @Override
     public String getPrefix() { return mPrefix; }
 }
  

@@ -21,21 +21,21 @@ abstract class SMSimpleOutput
     /////////////////////////////////////////////////////
      */
 
-    /*
-     * While there is some common behaviour that all instances share
+    /* While there is some common behaviour that all instances share
      * (specifically, that the output never fails), 
      * output differs, and there isn't much point in factoring out
      * 'return true;' part... so let's leave this abstract
      */
+    @Override
     protected abstract boolean _output(SMOutputContext ctxt, boolean canClose)
         throws XMLStreamException;
 
+    @Override
     protected void _forceOutput(SMOutputContext ctxt)
         throws XMLStreamException
     {
-        /* For simple output nodes this is simple; can just call
-         * normal output methods as these are never buffered
-         */
+        // For simple output nodes this is simple; can just call
+        // normal output methods as these are never buffered
         _output(ctxt, true);
     }
 }
