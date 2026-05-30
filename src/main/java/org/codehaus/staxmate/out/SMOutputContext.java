@@ -1050,9 +1050,11 @@ public final class SMOutputContext
             if (offset > len) {
                 offset = len;
             }
-            // !!! TBI: Should have String-with-indexes method too in XMLStreamWriter2
             String ind = _indentString.substring(0, offset);
-            _streamWriter.writeRaw(ind);
+            // 29-May-2026, tatu: [staxmate#27] Woodstox 7.2 does NOT close
+            //  open start element, so need to force
+            _streamWriter.writeCharacters("");
+            _streamWriter.writeSpace(ind);
         }
     }
 }

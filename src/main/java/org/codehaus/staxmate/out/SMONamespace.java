@@ -29,6 +29,7 @@ public class SMONamespace
         _parentNsCount = parentNsCount;
     }
 
+    @Override
     protected boolean _output(SMOutputContext ctxt, boolean canClose)
         throws XMLStreamException
     {

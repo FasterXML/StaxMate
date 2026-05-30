@@ -13,7 +13,8 @@ public class SMOProcInstr
         mTarget = target;
         mData = data;
     }
-    
+
+    @Override
     protected boolean _output(SMOutputContext ctxt, boolean canClose)
         throws XMLStreamException
     {
