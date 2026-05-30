@@ -13,6 +13,7 @@ permissions:
   contents: read
 jobs:
   build:
+    name: "Build (JDK ${{ matrix.java_version }}, Woodstox ${{ matrix.woodstox_version }})"
     runs-on: 'ubuntu-latest'
     strategy:
       fail-fast: false
