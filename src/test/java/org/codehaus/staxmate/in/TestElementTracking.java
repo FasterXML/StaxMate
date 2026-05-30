@@ -147,7 +147,7 @@ public class TestElementTracking
     private SMInputCursor _cursor(String xml)
         throws XMLStreamException
     {
-        XMLStreamReader sr = XMLInputFactory.newInstance().createXMLStreamReader(new StringReader(xml));
+        XMLStreamReader sr = getInputFactory().createStax2Reader(new StringReader(xml));
         return SMInputFactory.rootElementCursor(sr);
     }
 }

@@ -107,7 +107,7 @@ public class TestElementFilter
     private SMInputCursor _rootChildCursor(String xml, SMFilter filter)
         throws XMLStreamException
     {
-        XMLStreamReader sr = XMLInputFactory.newInstance().createXMLStreamReader(new StringReader(xml));
+        XMLStreamReader sr = getInputFactory().createStax2Reader(new StringReader(xml));
         SMInputCursor rootc = SMInputFactory.rootElementCursor(sr);
         assertEquals(SMEvent.START_ELEMENT, rootc.getNext());
         return rootc.childCursor(filter);
