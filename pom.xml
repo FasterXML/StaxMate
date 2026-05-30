@@ -6,7 +6,7 @@
   <parent>
     <groupId>com.fasterxml</groupId>
     <artifactId>oss-parent</artifactId>
-    <version>55</version>
+    <version>68</version>
   </parent>
   <groupId>com.fasterxml.staxmate</groupId>
   <artifactId>staxmate</artifactId>
@@ -25,7 +25,7 @@ It builds on top of a Stax (JSR-173) compliant XML processors such as Woodstox o
     <connection>scm:git:git@github.com:FasterXML/StaxMate.git</connection>
     <developerConnection>scm:git:git@github.com:FasterXML/StaxMate.git</developerConnection>
     <url>http://github.com/FasterXML/StaxMate</url>
-    <tag>staxmate-2.4.1</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <!-- 13-Oct-2020, tatu: Moved to Java 6 baseline (from Java 5) for 2.4 -->
@@ -68,7 +68,7 @@ It builds on top of a Stax (JSR-173) compliant XML processors such as Woodstox o
     <dependency>
       <groupId>org.codehaus.woodstox</groupId>
       <artifactId>stax2-api</artifactId>
-      <version>4.2.1</version>
+      <version>4.3.0</version>
     </dependency>
 
     <!-- and for testing, JUnit is needed -->
@@ -83,7 +83,7 @@ It builds on top of a Stax (JSR-173) compliant XML processors such as Woodstox o
     <dependency>
       <groupId>com.fasterxml.woodstox</groupId>
       <artifactId>woodstox-core</artifactId>
-      <version>6.5.1</version>
+      <version>6.7.0</version>
       <scope>test</scope>
     </dependency>
 

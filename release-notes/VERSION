@@ -4,6 +4,11 @@ Project: StaxMate
 == Releases ==
 ------------------------------------------------------------------------
 
+2.4.2 (not yet released)
+
+- Dependency updates: Woodstox 6.7.0, oss-parent 68, stax2-api 4.3.0
+- Branch "master" renamed as "main"
+
 2.4.1 (10-Oct-2023)
 
 - Dependency updates: Woodstox 6.5.1, oss-parent 55
