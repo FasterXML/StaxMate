@@ -3,11 +3,7 @@ package org.codehaus.staxmate.in;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
-import java.io.*;
-
 import javax.xml.stream.*;
-
-import org.codehaus.staxmate.SMInputFactory;
 
 /**
  *
@@ -23,8 +19,7 @@ public class TestSimpleText
     {
         final String text = "1";
         String XML = "<lvl1><lvl2>" + text + "</lvl2></lvl1>";
-        XMLStreamReader sr = XMLInputFactory.newInstance().createXMLStreamReader(new StringReader(XML));
-        SMInputCursor rootc = SMInputFactory.rootElementCursor(sr);
+        SMInputCursor rootc = rootElementCursor(XML);
         rootc.getNext();
         String elemName = rootc.getLocalName();
         assertEquals("lvl1",elemName);
@@ -42,8 +37,7 @@ public class TestSimpleText
         throws XMLStreamException
     {
         String XML = "<root>Some<?proc instr?> <foo>text</foo> to <![CDATA[collect]]>.</root>";
-        XMLStreamReader sr = XMLInputFactory.newInstance().createXMLStreamReader(new StringReader(XML));
-        SMInputCursor rootc = SMInputFactory.rootElementCursor(sr).advance();
+        SMInputCursor rootc = rootElementCursor(XML).advance();
         assertEquals("Some text to collect.", rootc.collectDescendantText(true));
     }
 }

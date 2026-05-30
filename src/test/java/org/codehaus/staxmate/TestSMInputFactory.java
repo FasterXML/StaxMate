@@ -38,7 +38,7 @@ public class TestSMInputFactory
     {
         XMLStreamReader sr = _stax(XML);
         SMHierarchicCursor rootc = SMInputFactory.rootElementCursor(sr);
-        assertEquals(SMEventCount(rootc), 1); // single root element
+        assertEquals(1, _countStartElements(rootc)); // single root element
         sr.close();
     }
 
@@ -194,16 +194,6 @@ public class TestSMInputFactory
     /* Helpers
     /**********************************************************************
      */
-
-    // returns number of START_ELEMENTs the cursor reports for the root level
-    private int SMEventCount(SMHierarchicCursor rootc) throws XMLStreamException
-    {
-        int n = 0;
-        while (rootc.getNext() != null) {
-            ++n;
-        }
-        return n;
-    }
 
     private int _countStartElements(SMInputCursor c) throws XMLStreamException
     {

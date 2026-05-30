@@ -126,8 +126,9 @@ public class TestOutputElement
         assertEquals("child", child.getLocalName());
         // root has no namespace; child is bound to NS
         SMNamespace rootNs = root.getNamespace();
-        assertTrue(rootNs == null || rootNs.getURI() == null || rootNs.getURI().length() == 0,
-                "root should have no namespace, was: "+rootNs);
+        if (rootNs != null) {
+            assertEmpty(rootNs.getURI());
+        }
         assertEquals(NS, child.getNamespace().getURI());
 
         // getPath includes both ancestors

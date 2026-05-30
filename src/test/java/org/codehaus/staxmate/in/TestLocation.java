@@ -3,11 +3,7 @@ package org.codehaus.staxmate.in;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
-import java.io.*;
-
 import javax.xml.stream.*;
-
-import org.codehaus.staxmate.SMInputFactory;
 
 /**
  * Unit test for verifying that location-related information is properly
@@ -24,9 +20,8 @@ public class TestLocation
     public void testNodeCountNested()
         throws XMLStreamException
     {
-        SMInputFactory sf = new SMInputFactory(XMLInputFactory.newInstance());
         String XML = "<root><!--comment--><a>text</a><?pi?><leaf /></root>";
-        SMInputCursor rootc = sf.rootElementCursor(new StringReader(XML)).advance();
+        SMInputCursor rootc = rootElementCursor(XML).advance();
         // let's traverse using element cursor, to skip comment
         SMInputCursor crsr = rootc.childElementCursor();
         assertEquals(0, crsr.getNodeCount());
@@ -47,9 +42,8 @@ public class TestLocation
     public void testElementCountNested()
         throws XMLStreamException
     {
-        SMInputFactory sf = new SMInputFactory(XMLInputFactory.newInstance());
         String XML = "<root><!--comment--><a>text</a><?pi?><leaf /></root>";
-        SMInputCursor rootc = sf.rootElementCursor(new StringReader(XML)).advance();
+        SMInputCursor rootc = rootElementCursor(XML).advance();
         // let's traverse using element cursor, to skip comment
         SMInputCursor crsr = rootc.childElementCursor();
         assertEquals(0, crsr.getElementCount());
@@ -70,9 +64,8 @@ public class TestLocation
     public void testCountsNotPropagatedToParent()
         throws XMLStreamException
     {
-        SMInputFactory sf = new SMInputFactory(XMLInputFactory.newInstance());
         String XML = "<root><a/>text<b/></root>";
-        SMInputCursor rootc = sf.rootElementCursor(new StringReader(XML)).advance();
+        SMInputCursor rootc = rootElementCursor(XML).advance();
 
         // mixed descendant cursor exposes a-start, a-end, text, b-start, b-end
         SMInputCursor desc = rootc.descendantMixedCursor();

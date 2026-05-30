@@ -370,9 +370,4 @@ public class TestDOMConverter
         }
         return count;
     }
-
-    private void assertEmpty(String str)
-    {
-        assertTrue((str == null) || str.length() == 0);
-    }
 }

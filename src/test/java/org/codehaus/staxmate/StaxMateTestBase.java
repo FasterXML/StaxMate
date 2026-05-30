@@ -123,6 +123,16 @@ public abstract class StaxMateTestBase
         }
     }
 
+    /**
+     * Asserts that given String is either null or empty; used for namespace
+     * URIs and prefixes, which Stax impls may report either way.
+     */
+    protected void assertEmpty(String str)
+    {
+        assertTrue((str == null) || str.length() == 0,
+                "Expected null or empty String, got '"+str+"'");
+    }
+
     /*
     /**********************************************************************
     /* Other accessors
