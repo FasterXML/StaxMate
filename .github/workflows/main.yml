@@ -1,0 +1,45 @@
+name: Build
+on:
+  push:
+    branches:
+    - main
+    paths-ignore:
+    - "README.md"
+    - "release-notes/*"
+  pull_request:
+    branches:
+    - main
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: 'ubuntu-latest'
+    strategy:
+      fail-fast: false
+      # 29-May-2026, tatu: If Java 6 baseline, cannot build on post-Java-8
+      #   (hence, soon upgrade to Java 8 baseline)
+      matrix:
+        java_version: ['8']
+    steps:
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+    - name: Set up JDK
+      uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
+      with:
+        distribution: "temurin"
+        java-version: ${{ matrix.java_version }}
+        cache: 'maven'
+        server-id: central-snapshots
+        server-username: CI_DEPLOY_USERNAME
+        server-password: CI_DEPLOY_PASSWORD
+    - name: Build
+      run: ./mvnw -B -q -ff -ntp verify
+    - name: Generate code coverage
+      if: ${{ github.event_name != 'pull_request' && matrix.java_version == '8' }}
+      run: ./mvnw -B -q -ff -ntp test
+    - name: Publish code coverage
+      if: ${{ github.event_name != 'pull_request' && matrix.java_version == '8' }}
+      uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6.0.0
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./target/site/jacoco/jacoco.xml
+        flags: unittests
