@@ -30,6 +30,9 @@ It builds on top of a Stax (JSR-173) compliant XML processors such as Woodstox o
   <properties>
     <javac.src.version>8</javac.src.version>
     <javac.target.version>8</javac.target.version>
+    <!-- Woodstox is only a test-time Stax implementation; version can be
+         overridden (e.g. by CI matrix) to test against multiple releases -->
+    <version.woodstox>7.1.0</version.woodstox>
   </properties>
   
   <issueManagement>
@@ -78,7 +81,7 @@ It builds on top of a Stax (JSR-173) compliant XML processors such as Woodstox o
     <dependency>
       <groupId>com.fasterxml.woodstox</groupId>
       <artifactId>woodstox-core</artifactId>
-      <version>7.1.0</version>
+      <version>${version.woodstox}</version>
       <scope>test</scope>
     </dependency>
 

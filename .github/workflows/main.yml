@@ -18,8 +18,12 @@ jobs:
       fail-fast: false
       matrix:
         java_version: ['8', '17', '25']
+        woodstox_version: ['6.7.0', '7.0.1', '7.1.0', '7.2.0']
         include:
+          # Run coverage/release steps on a single combination only, so the
+          # other Woodstox variants don't upload duplicate artifacts
           - java_version: '8'
+            woodstox_version: '7.1.0'
             release_build: 'R'
     steps:
     - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -33,7 +37,7 @@ jobs:
         server-username: CI_DEPLOY_USERNAME
         server-password: CI_DEPLOY_PASSWORD
     - name: Build
-      run: ./mvnw -B -q -ff -ntp verify
+      run: ./mvnw -B -q -ff -ntp verify -Dversion.woodstox=${{ matrix.woodstox_version }}
     - name: Generate code coverage
       # 'verify' above already ran tests with the JaCoCo agent attached, so
       # this only needs to render the report from the existing jacoco.exec
