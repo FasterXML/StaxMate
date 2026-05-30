@@ -35,7 +35,8 @@ public class SMOAttribute
     public static SMSimpleOutput attribute(SMNamespace namespace, String localName, int value) {
         return new IntAttribute(namespace, localName, value);
     }
-    
+
+    @Override
     protected boolean _output(SMOutputContext ctxt, boolean canClose)
         throws XMLStreamException
     {
@@ -55,7 +56,8 @@ public class SMOAttribute
             _localName = localName;
             _value = value;
         }
-        
+
+        @Override
         protected boolean _output(SMOutputContext ctxt, boolean canClose)
             throws XMLStreamException
         {
@@ -76,7 +78,8 @@ public class SMOAttribute
             _localName = localName;
             _value = value;
         }
-        
+
+        @Override
         protected boolean _output(SMOutputContext ctxt, boolean canClose)
             throws XMLStreamException
         {

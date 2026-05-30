@@ -32,7 +32,7 @@ It builds on top of a Stax (JSR-173) compliant XML processors such as Woodstox o
     <javac.target.version>8</javac.target.version>
     <!-- Woodstox is only a test-time Stax implementation; version can be
          overridden (e.g. by CI matrix) to test against multiple releases -->
-    <version.woodstox>7.1.1</version.woodstox>
+    <version.woodstox>7.2.0</version.woodstox>
   </properties>
   
   <issueManagement>

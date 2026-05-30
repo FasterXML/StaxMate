@@ -16,6 +16,7 @@ public class SMOComment
         mText = text;
     }
 
+    @Override
     protected boolean _output(SMOutputContext ctxt, boolean canClose)
         throws XMLStreamException
     {

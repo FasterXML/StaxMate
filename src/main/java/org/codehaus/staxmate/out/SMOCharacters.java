@@ -5,7 +5,7 @@ import javax.xml.stream.XMLStreamException;
 public abstract class SMOCharacters
     extends SMSimpleOutput
 {
-    private SMOCharacters() { }
+    protected SMOCharacters() { }
 
     /*
     ////////////////////////////////////////////////////////////////
@@ -29,10 +29,11 @@ public abstract class SMOCharacters
     public static SMOutputtable createNonShared(char[] buf, int offset, int len) {
         if (offset == 0 && len == buf.length) {
             return new ArrayBased(buf);
-	}
+        }
         return new ArrayBased3(buf, offset, len);
     }
-    
+
+    @Override
     protected abstract boolean _output(SMOutputContext ctxt, boolean canClose)
         throws XMLStreamException;
     
@@ -42,15 +43,16 @@ public abstract class SMOCharacters
     ////////////////////////////////////////////////////////////////
     */
     
-    private final static class StringBased
+    final static class StringBased
         extends SMOCharacters
     {
         final String mText;
-        
+
         StringBased(String text) {
             mText = text;
         }
-        
+
+        @Override
         protected boolean _output(SMOutputContext ctxt, boolean canClose)
             throws XMLStreamException
         {
@@ -69,6 +71,7 @@ public abstract class SMOCharacters
             mBuf = buf;
         }
 
+        @Override
         protected boolean _output(SMOutputContext ctxt, boolean canClose)
             throws XMLStreamException
         {
@@ -89,7 +92,8 @@ public abstract class SMOCharacters
             mOffset = offset;
             mLen = len;
         }
-        
+
+        @Override
         protected boolean _output(SMOutputContext ctxt, boolean canClose)
             throws XMLStreamException
         {

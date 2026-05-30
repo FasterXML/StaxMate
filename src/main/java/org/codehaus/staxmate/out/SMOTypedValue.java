@@ -26,6 +26,7 @@ public abstract class SMOTypedValue
         return new BinaryValue(data);
     }
 
+    @Override
     protected abstract boolean _output(SMOutputContext ctxt, boolean canClose)
         throws XMLStreamException;
 
@@ -40,7 +41,8 @@ public abstract class SMOTypedValue
         final boolean _value;
 
         BooleanValue(boolean v) { _value = v; }
-        
+
+        @Override
         protected boolean _output(SMOutputContext ctxt, boolean canClose) throws XMLStreamException
         {
             ctxt.writeValue(_value);
@@ -53,7 +55,8 @@ public abstract class SMOTypedValue
         final int _value;
 
         IntValue(int v) { _value = v; }
-        
+
+        @Override
         protected boolean _output(SMOutputContext ctxt, boolean canClose) throws XMLStreamException
         {
             ctxt.writeValue(_value);
@@ -66,7 +69,8 @@ public abstract class SMOTypedValue
         final long _value;
 
         LongValue(long v) { _value = v; }
-        
+
+        @Override
         protected boolean _output(SMOutputContext ctxt, boolean canClose) throws XMLStreamException
         {
             ctxt.writeValue(_value);
@@ -79,7 +83,8 @@ public abstract class SMOTypedValue
         final double _value;
 
         DoubleValue(double v) { _value = v; }
-        
+
+        @Override
         protected boolean _output(SMOutputContext ctxt, boolean canClose) throws XMLStreamException
         {
             ctxt.writeValue(_value);
@@ -92,7 +97,8 @@ public abstract class SMOTypedValue
         final byte[] _value;
 
         BinaryValue(byte[] v) { _value = v; }
-        
+
+        @Override
         protected boolean _output(SMOutputContext ctxt, boolean canClose) throws XMLStreamException {
             ctxt.writeValue(_value);
             return true;

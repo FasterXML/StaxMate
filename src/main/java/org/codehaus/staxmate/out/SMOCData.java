@@ -5,7 +5,7 @@ import javax.xml.stream.XMLStreamException;
 public abstract class SMOCData
     extends SMSimpleOutput
 {
-    private SMOCData() {
+    SMOCData() {
         super();
     }
 
@@ -37,6 +37,7 @@ public abstract class SMOCData
         return new ArrayBased3(buf, offset, len);
     }
 
+    @Override
     protected abstract boolean _output(SMOutputContext ctxt, boolean canClose)
         throws XMLStreamException;
 
@@ -56,6 +57,7 @@ public abstract class SMOCData
             mText = text;
         }
 
+        @Override
         protected boolean _output(SMOutputContext ctxt, boolean canClose)
             throws XMLStreamException
         {
@@ -73,7 +75,8 @@ public abstract class SMOCData
             super();
             mBuf = buf;
         }
-        
+
+        @Override
         protected boolean _output(SMOutputContext ctxt, boolean canClose)
             throws XMLStreamException
         {
@@ -94,7 +97,8 @@ public abstract class SMOCData
             mOffset = offset;
             mLen = len;
         }
-        
+
+        @Override
         protected boolean _output(SMOutputContext ctxt, boolean canClose)
             throws XMLStreamException
         {

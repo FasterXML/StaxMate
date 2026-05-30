@@ -12,6 +12,7 @@ public class SMOEntityRef
         mName = name;
     }
 
+    @Override
     protected boolean _output(SMOutputContext ctxt, boolean canClose)
         throws XMLStreamException
     {

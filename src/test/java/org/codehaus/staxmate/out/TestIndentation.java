@@ -1,14 +1,13 @@
 package org.codehaus.staxmate.out;
 
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
 
 import javax.xml.stream.*;
-import static javax.xml.stream.XMLStreamConstants.*;
 
-import org.codehaus.staxmate.SMOutputFactory;
+import static javax.xml.stream.XMLStreamConstants.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests for the heuristic indentation ("pretty-printing") feature,
