@@ -149,15 +149,25 @@ public class TestCursorAccessors
         rootc.setData(marker);
         assertSame(marker, rootc.getData());
 
-        // iterate all descendants, counting nodes vs elements
+        // iterate all descendants, counting nodes vs elements. For
+        // "<a/>text<b/>" a mixed descendant cursor exposes 5 events:
+        // a-start, a-end, text, b-start, b-end (END_ELEMENTs are returned
+        // except for the outermost). Counts live on the cursor that does the
+        // traversal (the child), NOT on its parent.
         SMInputCursor desc = rootc.descendantMixedCursor();
         int events = 0;
         while (desc.getNext() != null) {
             ++events;
         }
-        assertTrue("should have iterated several descendant nodes", events > 0);
-        // two elements (a, b) seen by the child cursor's parent
-        assertTrue(rootc.getNodeCount() >= rootc.getElementCount());
-        assertTrue(rootc.getElementCount() >= 1);
+        assertEquals(5, events);
+        // getNodeCount is 6, not 5: it also counts the final advance over the
+        // outermost END_ELEMENT (</root>), which terminates iteration (getNext
+        // returns null) but still moves the underlying stream reader.
+        assertEquals(6, desc.getNodeCount());
+        assertEquals(2, desc.getElementCount());
+        // ...and the parent's own counts are unaffected by the child cursor:
+        // rootc has only advanced over the single root start element.
+        assertEquals(1, rootc.getNodeCount());
+        assertEquals(1, rootc.getElementCount());
     }
 }
