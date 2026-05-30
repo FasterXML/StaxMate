@@ -4,11 +4,13 @@ Project: StaxMate
 == Releases ==
 ------------------------------------------------------------------------
 
-2.4.2 (not yet released)
+2.4.2 (29-May-2026)
 
 - Add Maven wrapper (./mvnw)
 - Branch "master" renamed as "main"
-- Dependency updates: Woodstox 6.7.0, oss-parent 68, stax2-api 4.3.0
+- Basic CI
+- Dependency updates: stax2-api 4.3.0, Woodstox 6.7.0 (testing)
+- Update to `oss-parent` v68 to switch to Central Portal publishing
 
 2.4.1 (10-Oct-2023)
 
