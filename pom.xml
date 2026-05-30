@@ -1,17 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
- <!-- General information -->
-
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.fasterxml</groupId>
     <artifactId>oss-parent</artifactId>
-    <version>68</version>
+    <version>79</version>
   </parent>
   <groupId>com.fasterxml.staxmate</groupId>
   <artifactId>staxmate</artifactId>
   <packaging>bundle</packaging>
-  <version>2.4.3-SNAPSHOT</version>
+  <version>2.5.0-SNAPSHOT</version>
 
   <name>StaxMate</name>
   <description>
@@ -29,12 +26,10 @@ It builds on top of a Stax (JSR-173) compliant XML processors such as Woodstox o
   </scm>
 
   <!-- 13-Oct-2020, tatu: Moved to Java 6 baseline (from Java 5) for 2.4 -->
+  <!-- 29-May-2026, tatu: and Java 8 for 2.5 -->
   <properties>
-    <javac.src.version>1.6</javac.src.version>
-    <javac.target.version>1.6</javac.target.version>
-
-    <maven.compiler.source>1.6</maven.compiler.source>
-    <maven.compiler.target>1.6</maven.compiler.target>
+    <javac.src.version>8</javac.src.version>
+    <javac.target.version>8</javac.target.version>
   </properties>
   
   <issueManagement>
@@ -83,7 +78,7 @@ It builds on top of a Stax (JSR-173) compliant XML processors such as Woodstox o
     <dependency>
       <groupId>com.fasterxml.woodstox</groupId>
       <artifactId>woodstox-core</artifactId>
-      <version>6.7.0</version>
+      <version>7.1.0</version>
       <scope>test</scope>
     </dependency>
 
@@ -96,10 +91,10 @@ It builds on top of a Stax (JSR-173) compliant XML processors such as Woodstox o
          <groupId>org.apache.maven.plugins</groupId>
          <artifactId>maven-javadoc-plugin</artifactId>
           <configuration>
-              <encoding>UTF-8</encoding>
-              <links>
-                  <link>http://docs.oracle.com/javase/6/docs/api/</link>
-              </links>
+            <encoding>UTF-8</encoding>
+            <links>
+              <link>https://docs.oracle.com/javase/8/docs/api/</link>
+            </links>
           </configuration>
        </plugin>
 
@@ -137,7 +132,6 @@ org.codehaus.staxmate.dom
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.17</version>
           <configuration>
             <excludes>
               <exclude>**/Base*.java</exclude>
@@ -147,12 +141,6 @@ org.codehaus.staxmate.dom
               <include>**/Test*.java</include>
             </includes>
           </configuration>
-        </plugin>
-
-        <!-- Let's also do code coverage -->
-        <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>cobertura-maven-plugin</artifactId>
         </plugin>
 
         <!-- for maven release, need yet another plug-in -->
@@ -167,34 +155,4 @@ org.codehaus.staxmate.dom
 
     </plugins>
   </build>
-
-    <profiles>
-        <profile>
-            <id>release-sign-artifacts</id>
-            <activation>
-                <property>
-                    <name>performRelease</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
 </project>

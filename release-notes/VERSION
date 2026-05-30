@@ -4,6 +4,10 @@ Project: StaxMate
 == Releases ==
 ------------------------------------------------------------------------
 
+2.5.0 (not yet released)
+
+#20: Increase Java baseline to Java 8
+
 2.4.2 (29-May-2026)
 
 - Add Maven wrapper (./mvnw)
