@@ -35,8 +35,10 @@ jobs:
     - name: Build
       run: ./mvnw -B -q -ff -ntp verify
     - name: Generate code coverage
+      # 'verify' above already ran tests with the JaCoCo agent attached, so
+      # this only needs to render the report from the existing jacoco.exec
       if: ${{ matrix.release_build }}
-      run: ./mvnw -B -q -ff -ntp test jacoco:report
+      run: ./mvnw -B -q -ff -ntp jacoco:report
     - name: Publish code coverage
       if: ${{ matrix.release_build && github.event_name != 'pull_request' && github.repository == 'FasterXML/StaxMate' }}
       uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6.0.0

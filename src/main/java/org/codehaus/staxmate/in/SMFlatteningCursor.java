@@ -41,6 +41,7 @@ public class SMFlatteningCursor
     /**********************************************************************
      */
 
+    @Override
     public int getParentCount()
     {
         /* First things first: if we have a child cursor, we can not
@@ -75,6 +76,7 @@ public class SMFlatteningCursor
     /**********************************************************************
      */
 
+    @Override
     public SMEvent getNext()
         throws XMLStreamException
     {
@@ -82,9 +84,7 @@ public class SMFlatteningCursor
             return null;
         }
 
-        /* If there is a child cursor, it has to be traversed
-         * through
-         */
+        // If there is a child cursor, it has to be traversed through
         if (_state == State.HAS_CHILD) {
             // After this, we'll be located at END_ELEMENT
             rewindPastChild();
@@ -173,10 +173,12 @@ public class SMFlatteningCursor
         return null;
     }
 
+    @Override
     public SMInputCursor constructChildCursor(SMFilter f) {
         return new SMHierarchicCursor(_context, this, f);
     }
 
+    @Override
     public SMInputCursor constructDescendantCursor(SMFilter f) {
         return new SMFlatteningCursor(_context, this, f);
     }

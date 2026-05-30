@@ -51,10 +51,12 @@ public final class SMBufferedFragment
     ///////////////////////////////////////////////////////////
     */
 
+    @Override
     public boolean isBuffered() {
         return (_state <= LAST_BUFFERED);
     }
 
+    @Override
     public void linkParent(SMOutputContainer parent, boolean blocked)
         throws XMLStreamException
     {
@@ -81,6 +83,7 @@ public final class SMBufferedFragment
         }
     }
 
+    @Override
     public void release()
         throws XMLStreamException
     {
@@ -108,6 +111,7 @@ public final class SMBufferedFragment
     ///////////////////////////////////////////////////////////
     */
 
+    @Override
     protected void _childReleased(SMOutputtable child)
         throws XMLStreamException
     {
@@ -126,6 +130,7 @@ public final class SMBufferedFragment
         }
     }
 
+    @Override
     protected boolean _output(SMOutputContext ctxt, boolean canClose)
         throws XMLStreamException
     {
@@ -148,6 +153,7 @@ public final class SMBufferedFragment
         return _closeAllButLastChild();
     }
 
+    @Override
     protected void _forceOutput(SMOutputContext ctxt)
         throws XMLStreamException
     {
@@ -156,6 +162,7 @@ public final class SMBufferedFragment
         _state = STATE_CLOSED;
     }
 
+    @Override
     public boolean _canOutputNewChild()
         throws XMLStreamException
     {
@@ -163,23 +170,22 @@ public final class SMBufferedFragment
         if (_state <= LAST_BLOCKED) {
             return false;
         }
-        /* Plus, if we are fully closed, we are not to allow even trying to
-         * add anything:
-         */
+        // Plus, if we are fully closed, we are not to allow even trying to
+        // add anything:
         if (_state == STATE_CLOSED) {
             _throwClosed();
         }
         return _closeAndOutputChildren();
     }
 
+    @Override
     public void getPath(StringBuilder sb)
     {
         if (_parent != null) {
             _parent.getPath(sb);
         }
-        /* Although fragments are "invisible", let's add an indicator
-         * of some sort, since this path is used for trouble-shooting
-         */
+        // Although fragments are "invisible", let's add an indicator
+        // of some sort, since this path is used for trouble-shooting
         sb.append("/{buffered-fragment}");
     }
 }

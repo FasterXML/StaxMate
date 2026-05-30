@@ -316,6 +316,7 @@ public abstract class SMInputCursor
      * @return True if this cursor iterates over root level of
      *   the underlying stream reader
      */
+    @Override
     public final boolean isRootCursor() {
         return (_baseDepth == 0);
     }
@@ -1899,6 +1900,7 @@ public abstract class SMInputCursor
      * will indicate location of the stream which may differ from
      * where this cursor was last valid)
      */
+    @Override
     public XMLStreamException constructStreamException(String msg)
     {
         // !!! TODO: use StaxMate-specific sub-classes of XMLStreamException?
@@ -1910,6 +1912,7 @@ public abstract class SMInputCursor
      * message. Equivalent to throwing exception that
      * {@link #constructStreamException} constructs and returns.
      */
+    @Override
     public void throwStreamException(String msg)
         throws XMLStreamException
     {
@@ -1964,7 +1967,7 @@ public abstract class SMInputCursor
     }
 
     private static void appendPathDesc(StringBuilder sb, SMElementInfo info,
-                                       boolean recursive)
+            boolean recursive)
     {
         if (info == null) {
             return;
@@ -1983,6 +1986,7 @@ public abstract class SMInputCursor
         sb.append("[e").append(info.getElementIndex()).append(']');
     }
 
+    @Override
     protected String getCurrEventDesc() {
         return (_currEvent == null) ? "[null]" : _currEvent.toString();
     }
@@ -2018,7 +2022,7 @@ public abstract class SMInputCursor
      * cursor argument, as that's passed as this pointer already.
      */
     protected SMElementInfo constructElementInfo(SMElementInfo parent,
-                                                 SMElementInfo prevSibling)
+            SMElementInfo prevSibling)
         throws XMLStreamException
     {
         if (mElemInfoFactory != null) {
@@ -2026,8 +2030,8 @@ public abstract class SMInputCursor
         }
         XMLStreamReader2 sr = _streamReader;
         return new DefaultElementInfo(parent, prevSibling,
-                                      sr.getPrefix(), sr.getNamespaceURI(), sr.getLocalName(),
-                                      _nodeCount-1, _elemCount-1, getParentCount());
+                sr.getPrefix(), sr.getNamespaceURI(), sr.getLocalName(),
+                _nodeCount-1, _elemCount-1, getParentCount());
     }
 
     /**

@@ -38,6 +38,7 @@ public final class SMBufferedElement
     ///////////////////////////////////////////////////////////
      */
 
+    @Override
     public boolean isBuffered() {
         return _isBuffered;
     }
@@ -45,6 +46,7 @@ public final class SMBufferedElement
     // Base class implementation is ok for this:
     //public void linkParent(SMOutputContainer parent, boolean blocked)
 
+    @Override
     public void release()
         throws XMLStreamException
     {
@@ -66,6 +68,7 @@ public final class SMBufferedElement
     /* Base implementation is mostly fine, but let's add some sanity
      * checking
      */
+    @Override
     protected boolean _output(SMOutputContext ctxt, boolean canClose)
         throws XMLStreamException
     {

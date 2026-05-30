@@ -30,6 +30,7 @@ public class SMRootFragment
     ///////////////////////////////////////////////////////////
      */
 
+    @Override
     protected boolean _output(SMOutputContext ctxt, boolean canClose)
         throws XMLStreamException
     {
@@ -43,6 +44,7 @@ public class SMRootFragment
         return _closeAllButLastChild();
     }
 
+    @Override
     protected void _forceOutput(SMOutputContext ctxt)
         throws XMLStreamException
     {
@@ -53,6 +55,7 @@ public class SMRootFragment
         _forceChildOutput();
     }
     
+    @Override
     protected void _childReleased(SMOutputtable child)
         throws XMLStreamException
     {
@@ -73,6 +76,7 @@ public class SMRootFragment
         // Either way, we are now done
     }
 
+    @Override
     public boolean _canOutputNewChild()
         throws XMLStreamException
     {
@@ -83,14 +87,14 @@ public class SMRootFragment
         return (_firstChild == null) || _closeAndOutputChildren();
     }
 
+    @Override
     public void getPath(StringBuilder sb)
     {
         if (_parent != null) {
             _parent.getPath(sb);
         }
-        /* Although fragments are "invisible", let's add an indicator
-         * of some sort, since this path is used for trouble-shooting
-         */
+        // Although fragments are "invisible", let's add an indicator
+        // of some sort, since this path is used for trouble-shooting
         sb.append("/{fragment}");
     }
 

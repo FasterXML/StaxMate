@@ -57,6 +57,7 @@ public class ElementFilter
     /////////////////////////////////////////////////////
      */
 
+    @Override
     public boolean accept(SMEvent evt, SMInputCursor caller)
         throws XMLStreamException
     {

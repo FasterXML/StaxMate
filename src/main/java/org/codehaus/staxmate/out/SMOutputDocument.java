@@ -71,16 +71,11 @@ public class SMOutputDocument
      * writer may be buffering some parts, it needs to be informed of
      * the closure.
      */
+    @Override
     public void closeRoot()
         throws XMLStreamException
     {
         super.closeRoot();
         getContext().writeEndDocument();
     }
-
-    /*
-    ///////////////////////////////////////////////////////////
-    // Internal methods
-    ///////////////////////////////////////////////////////////
-    */
 }

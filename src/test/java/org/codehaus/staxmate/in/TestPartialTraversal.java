@@ -5,8 +5,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.codehaus.staxmate.SMInputFactory;
-import org.codehaus.staxmate.in.SMFilterFactory;
-import org.codehaus.staxmate.in.SMInputCursor;
 
 /**
  * Set of test cases to verify that the nested cursors handle traversal

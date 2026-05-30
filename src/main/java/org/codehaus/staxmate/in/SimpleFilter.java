@@ -42,6 +42,7 @@ public class SimpleFilter
     /////////////////////////////////////////////////////
      */
 
+    @Override
     public boolean accept(SMEvent evt, SMInputCursor caller)
         throws XMLStreamException
     {
