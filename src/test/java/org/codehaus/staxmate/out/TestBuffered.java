@@ -1,5 +1,8 @@
 package org.codehaus.staxmate.out;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
 import java.io.*;
 
 import javax.xml.stream.*;
@@ -17,6 +20,7 @@ public class TestBuffered
     /**
      * Unit test for verifying that buffered output works ok
      */
+    @Test
     public void testBuffered()
         throws Exception
     {
@@ -105,6 +109,7 @@ public class TestBuffered
      * Even simpler unit test that verifies that it is ok to pass
      * null namespaces
      */
+    @Test
     public void testBufferedNoNs()
         throws Exception
     {
@@ -138,6 +143,7 @@ public class TestBuffered
      * Another simple unit test that exercises some alternative text
      * output methods
      */
+    @Test
     public void testBufferedWithText() throws Exception
     {
         StringWriter sw = new StringWriter();
@@ -172,6 +178,7 @@ public class TestBuffered
         sr.close();
     }
 
+    @Test
     public void testBufferedWithAttr()
         throws Exception
     {

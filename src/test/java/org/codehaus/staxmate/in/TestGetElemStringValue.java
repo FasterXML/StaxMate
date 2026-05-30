@@ -1,12 +1,23 @@
 package org.codehaus.staxmate.in;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
 import java.io.StringReader;
 
 import javax.xml.stream.XMLStreamReader;
 
 import org.codehaus.stax2.XMLStreamReader2;
 
-public class TestReadingFor37 extends ReaderTestBase
+/**
+ * Tests for reading element text via {@link SMInputCursor#getElemStringValue}
+ * through child element cursors. Exercises both the native Stax2 reader and a
+ * forced Stax 1.0 wrapper, since the two go through different code paths.
+ *<p>
+ * Regression coverage for [STAXMATE-37]: {@code getElemStringValue} used to
+ * cause an unexpected END_DOCUMENT with the default Java 6 XMLInputFactory.
+ */
+public class TestGetElemStringValue extends ReaderTestBase
 {
     /*
     /**********************************************************************
@@ -14,29 +25,33 @@ public class TestReadingFor37 extends ReaderTestBase
     /**********************************************************************
      */
 
-    public void testStaxMate37aWithNative() throws Exception {
-        _testStaxMate37a(false);
+    @Test
+    public void testSingleChildNative() throws Exception {
+        _testSingleChild(false);
     }
 
-    public void testStaxMate37aWithWrapper() throws Exception {
-        _testStaxMate37a(true);
-    }
-    
-    public void testStaxMate37bWithNative() throws Exception {
-        _testStaxMate37b(false);
+    @Test
+    public void testSingleChildWrapped() throws Exception {
+        _testSingleChild(true);
     }
 
-    public void testStaxMate37bWithWrapper() throws Exception {
-        _testStaxMate37b(true);
+    @Test
+    public void testTwoChildrenNative() throws Exception {
+        _testTwoChildren(false);
     }
-    
+
+    @Test
+    public void testTwoChildrenWrapped() throws Exception {
+        _testTwoChildren(true);
+    }
+
     /*
     /**********************************************************************
     /* Helper methods
     /**********************************************************************
      */
 
-    private void _testStaxMate37a(boolean wrap) throws Exception
+    private void _testSingleChild(boolean wrap) throws Exception
     {
         String XML = "<root>\n<a>xyz</a>\n</root>";
         SMInputCursor rootC = _rootCursor(wrap, XML);
@@ -46,8 +61,8 @@ public class TestReadingFor37 extends ReaderTestBase
         assertEquals("xyz", c.getElemStringValue());
         assertNull(c.getNext());
     }
-    
-    private void _testStaxMate37b(boolean wrap) throws Exception
+
+    private void _testTwoChildren(boolean wrap) throws Exception
     {
         String XML = "<root>\n<a>xyz</a>\n<b>abc</b>\n</root>";
         SMInputCursor rootC = _rootCursor(wrap, XML);
@@ -59,9 +74,9 @@ public class TestReadingFor37 extends ReaderTestBase
         assertEquals("b", c.getLocalName());
         assertNull(c.getNext());
     }
-    
+
     private SMInputCursor _rootCursor(boolean wrap, String XML) throws Exception
-    {    
+    {
         XMLStreamReader sr = getStaxInputFactory().createXMLStreamReader(new StringReader(XML));
         XMLStreamReader2 sr2;
         if (wrap || !(sr instanceof XMLStreamReader2)) {

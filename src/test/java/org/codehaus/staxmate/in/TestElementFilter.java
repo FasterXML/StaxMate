@@ -1,5 +1,8 @@
 package org.codehaus.staxmate.in;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
 import java.io.StringReader;
 
 import javax.xml.namespace.QName;
@@ -19,6 +22,7 @@ public class TestElementFilter
      * Filter constructed with just a local name should match elements
      * with that local name and no namespace, and skip everything else.
      */
+    @Test
     public void testLocalNameOnly()
         throws Exception
     {
@@ -37,6 +41,7 @@ public class TestElementFilter
      * A namespace-qualified filter should only match elements in that
      * namespace, ignoring same-local-name elements in no/other namespace.
      */
+    @Test
     public void testNamespaceMatching()
         throws Exception
     {
@@ -63,6 +68,7 @@ public class TestElementFilter
      * The QName constructor should behave identically to the explicit
      * (nsURI, localName) constructor.
      */
+    @Test
     public void testQNameConstructor()
         throws Exception
     {
@@ -80,6 +86,7 @@ public class TestElementFilter
      * An empty local name is explicitly allowed by the constructor but
      * should never match any element.
      */
+    @Test
     public void testEmptyLocalNameMatchesNothing()
         throws Exception
     {
@@ -88,6 +95,7 @@ public class TestElementFilter
         assertNull(childc.getNext());
     }
 
+    @Test
     public void testNullLocalNameFails()
     {
         try {

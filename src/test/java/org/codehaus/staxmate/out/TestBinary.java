@@ -1,5 +1,8 @@
 package org.codehaus.staxmate.out;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 import java.io.StringWriter;
@@ -10,6 +13,7 @@ public class TestBinary extends BaseWriterTest
 {
     final static byte[] STUFF = new byte[] { 1, 15, (byte) 0xFF, 3 };
     
+    @Test
     public void testSimpleAttributeWrite()
         throws Exception
     {
@@ -27,6 +31,7 @@ public class TestBinary extends BaseWriterTest
         sr.close();
     }
 
+    @Test
     public void testSimpleElementWrite()
         throws Exception
     {

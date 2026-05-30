@@ -1,5 +1,8 @@
 package org.codehaus.staxmate.in;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
 import java.io.StringReader;
 
 import javax.xml.namespace.QName;
@@ -7,9 +10,10 @@ import javax.xml.namespace.QName;
 import org.codehaus.staxmate.SMInputFactory;
 
 /**
- * Tests targeting the various name, namespace, attribute-metadata, count
- * and user-data accessors of {@link SMInputCursor} that are not exercised
- * by the other input-side tests.
+ * Tests targeting the name/namespace, attribute-metadata, current-event and
+ * user-data accessors of {@link SMInputCursor} that are not exercised by the
+ * other input-side tests. (Typed value access lives in {@code TestTyped};
+ * node/element counts in {@code TestLocation}.)
  */
 public class TestCursorAccessors
     extends ReaderTestBase
@@ -19,6 +23,7 @@ public class TestCursorAccessors
      * prefixed name) and the various {@code hasName}/{@code hasLocalName}
      * checks, for both namespaced and non-namespaced elements.
      */
+    @Test
     public void testElementNameAccessors()
         throws Exception
     {
@@ -30,8 +35,8 @@ public class TestCursorAccessors
         // root has no namespace
         assertEquals("root", rootc.getLocalName());
         String rootPrefix = rootc.getPrefix();
-        assertTrue("root prefix should be null or empty, was '"+rootPrefix+"'",
-                rootPrefix == null || rootPrefix.length() == 0);
+        assertTrue(rootPrefix == null || rootPrefix.length() == 0,
+                "root prefix should be null or empty, was '"+rootPrefix+"'");
         assertEquals("", rootc.getNsUri());
         assertEquals("root", rootc.getPrefixedName());
         assertEquals(new QName("root"), rootc.getQName());
@@ -59,6 +64,7 @@ public class TestCursorAccessors
      * Verifies attribute-metadata accessors: count, index lookup, and
      * per-index name/prefix/ns-uri/value, plus the by-name value lookups.
      */
+    @Test
     public void testAttributeMetadata()
         throws Exception
     {
@@ -70,7 +76,7 @@ public class TestCursorAccessors
         assertEquals(3, rootc.getAttrCount());
 
         int idIdx = rootc.findAttrIndex(null, "id");
-        assertTrue("'id' attribute should be found", idIdx >= 0);
+        assertTrue(idIdx >= 0, "'id' attribute should be found");
         assertEquals("id", rootc.getAttrLocalName(idIdx));
         assertEquals("7", rootc.getAttrValue(idIdx));
         assertEquals(new QName("id"), rootc.getAttrName(idIdx));
@@ -81,7 +87,7 @@ public class TestCursorAccessors
         assertTrue(idNs == null || idNs.length() == 0);
 
         int typeIdx = rootc.findAttrIndex(NS, "type");
-        assertTrue("namespaced attribute should be found", typeIdx >= 0);
+        assertTrue(typeIdx >= 0, "namespaced attribute should be found");
         assertEquals("a", rootc.getAttrPrefix(typeIdx));
         assertEquals(NS, rootc.getAttrNsUri(typeIdx));
         assertEquals(new QName(NS, "type", "a"), rootc.getAttrName(typeIdx));
@@ -98,40 +104,11 @@ public class TestCursorAccessors
     }
 
     /**
-     * Verifies typed element value accessors not covered elsewhere
-     * (long and double, with and without default values).
+     * Verifies current-event accessors and the arbitrary user-data slot
+     * ({@code getData}/{@code setData}).
      */
-    public void testTypedLongAndDoubleElem()
-        throws Exception
-    {
-        // one typed accessor per element (each consumes the element content):
-        String XML = "<root><a>  -123456789012  </a><b>2.5</b><c/><d/></root>";
-        SMInputFactory sf = getInputFactory();
-        SMInputCursor crsr = sf.rootElementCursor(new StringReader(XML))
-            .advance().childElementCursor().advance();
-
-        assertEquals("a", crsr.getLocalName());
-        assertEquals(-123456789012L, crsr.getElemLongValue());
-
-        assertEquals(SMEvent.START_ELEMENT, crsr.getNext());
-        assertEquals("b", crsr.getLocalName());
-        assertEquals(2.5, crsr.getElemDoubleValue());
-
-        // empty elements fall back to the supplied default
-        assertEquals(SMEvent.START_ELEMENT, crsr.getNext());
-        assertEquals("c", crsr.getLocalName());
-        assertEquals(99L, crsr.getElemLongValue(99L));
-
-        assertEquals(SMEvent.START_ELEMENT, crsr.getNext());
-        assertEquals("d", crsr.getLocalName());
-        assertEquals(1.5, crsr.getElemDoubleValue(1.5));
-    }
-
-    /**
-     * Verifies node/element counters, current-event accessors, and the
-     * arbitrary user-data slot ({@code getData}/{@code setData}).
-     */
-    public void testCountsEventsAndData()
+    @Test
+    public void testEventAndDataAccessors()
         throws Exception
     {
         String XML = "<root><a/>text<b/></root>";
@@ -148,26 +125,5 @@ public class TestCursorAccessors
         Object marker = new Object();
         rootc.setData(marker);
         assertSame(marker, rootc.getData());
-
-        // iterate all descendants, counting nodes vs elements. For
-        // "<a/>text<b/>" a mixed descendant cursor exposes 5 events:
-        // a-start, a-end, text, b-start, b-end (END_ELEMENTs are returned
-        // except for the outermost). Counts live on the cursor that does the
-        // traversal (the child), NOT on its parent.
-        SMInputCursor desc = rootc.descendantMixedCursor();
-        int events = 0;
-        while (desc.getNext() != null) {
-            ++events;
-        }
-        assertEquals(5, events);
-        // getNodeCount is 6, not 5: it also counts the final advance over the
-        // outermost END_ELEMENT (</root>), which terminates iteration (getNext
-        // returns null) but still moves the underlying stream reader.
-        assertEquals(6, desc.getNodeCount());
-        assertEquals(2, desc.getElementCount());
-        // ...and the parent's own counts are unaffected by the child cursor:
-        // rootc has only advanced over the single root start element.
-        assertEquals(1, rootc.getNodeCount());
-        assertEquals(1, rootc.getElementCount());
     }
 }

@@ -1,5 +1,8 @@
 package org.codehaus.staxmate.dom;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
 import java.io.*;
 
 import javax.xml.parsers.*;
@@ -17,6 +20,7 @@ public class TestDOMConverter
      * Unit test that verifies that a proper DOM tree can be constructed
      * from Stax stream reader.
      */
+    @Test
     public void testDOMReadFromStax()
         throws XMLStreamException
     {
@@ -80,6 +84,7 @@ public class TestDOMConverter
         assertNull(n.getNextSibling());
     }
 
+    @Test
     public void testDOMWrittenUsingStax()
         throws Exception
     {
@@ -114,6 +119,7 @@ public class TestDOMConverter
         assertTokenType(END_DOCUMENT, sr.next());
     }
 
+    @Test
     public void testIssue39a() throws Exception
     {
         final String XML =
@@ -136,6 +142,7 @@ public class TestDOMConverter
         sr.close();
     }
 
+    @Test
     public void testIssue39b() throws Exception
     {
         final String XML =
@@ -181,6 +188,7 @@ public class TestDOMConverter
     }
     
     // Test for [STAXMATE-41]
+    @Test
     public void testReadWriteWithAttributes() throws Exception
     {
         XMLStreamReader sr = XMLInputFactory.newInstance().createXMLStreamReader(
@@ -204,6 +212,7 @@ public class TestDOMConverter
     }
 
     // Test for [STAXMATE-41]
+    @Test
     public void testReadWriteElement() throws Exception
     {
         XMLStreamReader sr = XMLInputFactory.newInstance().createXMLStreamReader(

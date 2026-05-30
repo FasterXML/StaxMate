@@ -1,5 +1,8 @@
 package org.codehaus.staxmate.in;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
 import java.io.StringReader;
 
 import javax.xml.stream.*;
@@ -19,6 +22,7 @@ public class TestElementTracking
      * Verifies the info recorded for a tracked root element: it has no
      * parent and no previous sibling, and exposes name/depth/index data.
      */
+    @Test
     public void testRootTracking()
         throws Exception
     {
@@ -45,6 +49,7 @@ public class TestElementTracking
      * should link to its parent (the root's tracked element) and to its
      * previous sibling.
      */
+    @Test
     public void testChildTrackingWithSiblings()
         throws Exception
     {
@@ -90,6 +95,7 @@ public class TestElementTracking
      * PARENTS tracking should retain the parent linkage but not previous
      * sibling information.
      */
+    @Test
     public void testParentsTrackingHasNoSiblings()
         throws Exception
     {
@@ -118,6 +124,7 @@ public class TestElementTracking
      * the values it was given (covers the trivial accessors and the
      * namespace/prefix getters not used by the no-namespace cases above).
      */
+    @Test
     public void testDefaultElementInfoAccessors()
         throws Exception
     {

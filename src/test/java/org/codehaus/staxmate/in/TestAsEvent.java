@@ -1,5 +1,8 @@
 package org.codehaus.staxmate.in;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
 import java.io.*;
 import java.util.Iterator;
 
@@ -20,6 +23,7 @@ public class TestAsEvent
         "<root>fobar<?proc instr?><!--comment-stuff-->"
         +"<leaf attr='3' /></root>";
 
+    @Test
     public void testSimpleUsingHierarchic()
         throws XMLStreamException
     {
@@ -38,6 +42,7 @@ public class TestAsEvent
         assertNull(rootC.asEvent());
     }
 
+    @Test
     public void testSimpleUsingFlattening()
         throws XMLStreamException
     {

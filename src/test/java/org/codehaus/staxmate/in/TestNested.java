@@ -1,5 +1,8 @@
 package org.codehaus.staxmate.in;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
 import java.io.*;
 
 import javax.xml.stream.*;
@@ -13,6 +16,7 @@ import org.codehaus.staxmate.SMInputFactory;
 public class TestNested
     extends ReaderTestBase
 {
+    @Test
     public void testSimpleTwoLevel()
         throws Exception
     {
@@ -50,6 +54,7 @@ public class TestNested
         sr.close();
     }
 
+    @Test
     public void testSimpleThreeLevel()
         throws XMLStreamException
     {
@@ -117,6 +122,7 @@ public class TestNested
      * This a complementary test, and checks, to verify against regression
      * in hierarchic cursor synchronization.
      */
+    @Test
     public void testThreeLevel2()
         throws XMLStreamException
     {
@@ -137,8 +143,9 @@ public class TestNested
         while (ptCursor.getNext() != null) {
             assertEquals(1, ptCursor.getParentCount());
             assertElem(ptCursor, null, "pt");
-            assertNotNull("Should be able to find attribute 'name' (current event: "
-                          +ptCursor.getCurrEvent()+", location "+ptCursor.getCursorLocation()+")", ptCursor.getAttrValue("name"));
+            assertNotNull(ptCursor.getAttrValue("name"),
+                          "Should be able to find attribute 'name' (current event: "
+                          +ptCursor.getCurrEvent()+", location "+ptCursor.getCursorLocation()+")");
             SMInputCursor propCursor = ptCursor.childElementCursor();
             while (propCursor.getNext() != null) {
                 assertEquals(2, propCursor.getParentCount());
@@ -152,6 +159,7 @@ public class TestNested
         sr.close();
     }
 
+    @Test
     public void testAdvance()
         throws Exception
     {

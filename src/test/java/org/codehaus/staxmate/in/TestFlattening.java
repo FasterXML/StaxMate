@@ -1,5 +1,8 @@
 package org.codehaus.staxmate.in;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
 import javax.xml.stream.*;
 
 import org.codehaus.staxmate.SMInputFactory;
@@ -11,6 +14,7 @@ import org.codehaus.staxmate.SMInputFactory;
 public class TestFlattening
     extends ReaderTestBase
 {
+    @Test
     public void testTwoLevelMixed()
         throws Exception
     {

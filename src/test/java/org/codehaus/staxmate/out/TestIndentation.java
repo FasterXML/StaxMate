@@ -1,6 +1,12 @@
 package org.codehaus.staxmate.out;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
 import java.io.*;
+
+import javax.xml.stream.*;
+import static javax.xml.stream.XMLStreamConstants.*;
 
 import org.codehaus.staxmate.SMOutputFactory;
 
@@ -15,6 +21,7 @@ public class TestIndentation
      * Basic test: a nested element tree (no mixed content) should get
      * a newline plus increasing indentation for each level.
      */
+    @Test
     public void testNestedIndentation()
         throws Exception
     {
@@ -46,6 +53,7 @@ public class TestIndentation
      * heuristically suppressed for that element so the text is not
      * altered.
      */
+    @Test
     public void testIndentationSuppressedByText()
         throws Exception
     {
@@ -71,6 +79,7 @@ public class TestIndentation
     /**
      * Verifies that the per-level 'step' is honored (here: 1 char per level).
      */
+    @Test
     public void testIndentationStep()
         throws Exception
     {
@@ -91,6 +100,36 @@ public class TestIndentation
                 +".</branch>\n"
                 +"</root>",
                 xml);
+    }
+
+    /**
+     * Exercises indentation together with comments and processing
+     * instructions, which hit the indentation-suppression branches for
+     * non-element nodes.
+     */
+    @Test
+    public void testIndentedWithCommentsAndPI()
+        throws Exception
+    {
+        StringWriter sw = new StringWriter();
+        SMOutputDocument doc = createSimpleDoc(sw);
+        doc.setIndentation("\n                    ", 1, 2);
+
+        SMOutputElement root = doc.addElement("root");
+        root.addComment("c");
+        root.addProcessingInstruction("pi", "d");
+        root.addElement("leaf");
+        doc.closeRoot();
+
+        String xml = sw.toString();
+        // newlines and indentation should be present around the nodes
+        assertTrue(xml.indexOf("\n  ") > 0,
+                "expected indentation newlines, got: "+xml);
+        // and it must still be well-formed / re-readable
+        XMLStreamReader sr = getCoalescingReader(xml);
+        assertTokenType(START_ELEMENT, sr.next());
+        assertElem(sr, null, "root");
+        sr.close();
     }
 
     /**

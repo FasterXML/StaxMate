@@ -1,5 +1,7 @@
 package org.codehaus.staxmate.out;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.*;
 
 import javax.xml.stream.*;

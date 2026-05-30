@@ -1,5 +1,8 @@
 package org.codehaus.staxmate.in;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
 import java.io.StringReader;
 
 import javax.xml.stream.*;
@@ -13,6 +16,7 @@ import org.codehaus.staxmate.SMInputFactory;
 public class TestFilter
     extends ReaderTestBase
 {
+    @Test
     public void testChildElementFilter()
         throws Exception
     {
@@ -29,6 +33,7 @@ public class TestFilter
         assertNull(rootc.getNext());
     }
 
+    @Test
     public void testDescendantElementFilter()
         throws Exception
     {
@@ -50,6 +55,7 @@ public class TestFilter
         assertNull(crsr.getNext());
     }
 
+    @Test
     public void testChildTextFilter()
         throws Exception
     {
@@ -72,6 +78,7 @@ public class TestFilter
         assertNull(rootc.getNext());
     }
 
+    @Test
     public void testDescendantTextFilter()
         throws Exception
     {
@@ -86,6 +93,7 @@ public class TestFilter
         assertEquals("abcdefgh", sb.toString());
     }
 
+    @Test
     public void testChildMixedFilter()
         throws Exception
     {
@@ -117,6 +125,7 @@ public class TestFilter
      * Simple test for a flattening mixed (text, start/end element)
      * cursor
      */
+    @Test
     public void testDescendantMixedFilter()
         throws Exception
     {
@@ -144,6 +153,7 @@ public class TestFilter
         assertNull(crsr.getNext());
     }
 
+    @Test
     public void testFlatteningFilterWithAdvance()
         throws Exception
     {
